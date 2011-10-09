@@ -1,0 +1,1 @@
+Suggest your bookmark tags similar to the artwork's tags and the bookmarked tags. Automatically select your tags that are identical to the artwork's tags.
