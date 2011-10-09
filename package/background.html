@@ -1,0 +1,34 @@
+<html>
+<head><title>Background</title></head>
+<script type="text/javascript">
+var config = {};
+function load() {
+  var auto_select = localStorage["auto_select"];
+  if (!auto_select) {
+    auto_select = "on";
+  }
+
+  var suggest = localStorage["suggest"];
+  if (!suggest) {
+    suggest = "strict";
+  }
+  config = {
+    auto_select: auto_select,
+    suggest: suggest
+  };
+}
+
+chrome.extension.onRequest.addListener(
+  function(request, sender, sendResponse) {
+    if(request.type == "get") {
+      sendResponse(config);
+    } else if(request.type == "set") {
+      load();
+      sendResponse(config);
+    }
+  }
+);
+</script>
+<body onload="load();">
+</body>
+</html>

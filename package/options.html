@@ -1,0 +1,72 @@
+<html>
+<head><title>Pixiv Tag Suggest Options</title></head>
+<script type="text/javascript">
+
+// Saves options to localStorage.
+function save_options() {
+  var select = document.getElementById("auto_select");
+  var auto_select = select.children[select.selectedIndex].value;
+  localStorage["auto_select"] = auto_select;
+
+  var select2 = document.getElementById("suggest");
+  var suggest = select2.children[select2.selectedIndex].value;
+  localStorage["suggest"] = suggest;
+
+  chrome.extension.sendRequest({type:"set"}, function(response) {});
+  // Update status to let user know options were saved.
+  var status = document.getElementById("status");
+  status.innerHTML = "Options Saved.";
+  setTimeout(function() {
+    status.innerHTML = "";
+  }, 1000);
+
+}
+
+// Restores select box state to saved value from localStorage.
+function restore_options() {
+  var auto_select = localStorage["auto_select"];
+  if (auto_select) {
+    var select = document.getElementById("auto_select");
+    for (var i = 0; i < select.children.length; i++) {
+      var child = select.children[i];
+      if (child.value == auto_select) {
+        child.selected = "true";
+        break;
+      }
+    }
+  }
+
+  var suggest = localStorage["suggest"];
+  if (suggest) {
+    var select2 = document.getElementById("suggest");
+    for (var i = 0; i < select2.children.length; i++) {
+      var child2 = select2.children[i];
+      if (child2.value == suggest) {
+        child2.selected = "true";
+        break;
+      }
+    }
+  }
+}
+
+</script>
+
+<body onload="restore_options()">
+<p>
+Auto Select:
+<select id="auto_select">
+  <option value="on">On</option>
+  <option value="off">Off</option>
+</select>
+</p>
+<p>
+Suggest:
+<select id="suggest">
+  <option value="strict">Strict</option>
+  <option value="lenient">Lenient</option>
+</select>
+</p>
+<button onclick="save_options()">Save</button>
+<p id="status"></p>
+</body>
+</html>

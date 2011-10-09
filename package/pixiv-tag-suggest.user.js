@@ -1,18 +1,35 @@
 (function(){
+var config = null;
+chrome.extension.sendRequest({type:"get"}, function(response) {
+  config = response;
 
-//パラメータ
-var limit = 10;//サジェストするタグの最大数
-//類似文字列判定用パラメータ
-var minTag = 1;//処理対象にする画像と他の人のタグの長さの下限
-var minOuter = 2;//対象とする他の人がブックマークしているタグの頻度の下限
-var maxIncludeTagRate = 8;//短い側のタグが含まれている長い側のタグの文字数が短い側の何倍かの上限
-//LCS用パラメータ
-var minLCS = 3;//最長共通部分文字列(LCS)の下限
-var minLCSRateLong = 0.7;//長い側のタグに占める共通部分文字列の割合の下限
-var minLCSRateShort = 0.7;//短い側のタグに占める共通部分文字列の割合の下限
-var maxLCSTagRateLong = 6;//LCSが含まれている長い側のタグの文字数がLCSの何倍かの上限
-var maxLCSTagRateShort = 2;//LCSが含まれている短い側のタグの文字数がLCSの何倍かの上限
-
+if(config.suggest == "strict") {
+  //パラメータ
+  var limit = 10;//サジェストするタグの最大数
+  //類似文字列判定用パラメータ
+  var minTag = 1;//処理対象にする画像と他の人のタグの長さの下限
+  var minOuter = 2;//対象とする他の人がブックマークしているタグの頻度の下限
+  var maxIncludeTagRate = 8;//短い側のタグが含まれている長い側のタグの文字数が短い側の何倍かの上限
+  //LCS用パラメータ
+  var minLCS = 3;//最長共通部分文字列(LCS)の下限
+  var minLCSRateLong = 0.7;//長い側のタグに占める共通部分文字列の割合の下限
+  var minLCSRateShort = 0.7;//短い側のタグに占める共通部分文字列の割合の下限
+  var maxLCSTagRateLong = 6;//LCSが含まれている長い側のタグの文字数がLCSの何倍かの上限
+  var maxLCSTagRateShort = 2;//LCSが含まれている短い側のタグの文字数がLCSの何倍かの上限
+} else {
+  //パラメータ
+  var limit = 10;//サジェストするタグの最大数
+  //類似文字列判定用パラメータ
+  var minTag = 1;//処理対象にする画像と他の人のタグの長さの下限
+  var minOuter = 1;//対象とする他の人がブックマークしているタグの頻度の下限
+  var maxIncludeTagRate = 12;//短い側のタグが含まれている長い側のタグの文字数が短い側の何倍かの上限
+  //LCS用パラメータ
+  var minLCS = 3;//最長共通部分文字列(LCS)の下限
+  var minLCSRateLong = 0.5;//長い側のタグに占める共通部分文字列の割合の下限
+  var minLCSRateShort = 0.5;//短い側のタグに占める共通部分文字列の割合の下限
+  var maxLCSTagRateLong = 9;//LCSが含まれている長い側のタグの文字数がLCSの何倍かの上限
+  var maxLCSTagRateShort = 2;//LCSが含まれている短い側のタグの文字数がLCSの何倍かの上限
+}
 
 //自分のブックマークタグ
 myTagLink = {}
@@ -50,6 +67,9 @@ var auto = "";
 var autoTag = {};
 
 function addScore(hash, key, weight) {
+  if(key == "pixivTouch" || key == "pixivMobile") {
+    return;
+  }
 	if(key in hash) {
 		hash[key] += weight;
 	} else {
@@ -61,23 +81,25 @@ if(onTagSrc.length < 2) {
 	for(var it in imgTagList) {
 		for(var mt in myTagList){
 			if(it == mt){
-				if(!(it in onTagList)) {
-					auto += "pixiv.tag.toggle('" + encodeURI(mt) + "');";
+				if(config.auto_select == "on") {
+					if(!(it in onTagList)) {
+						auto += "pixiv.tag.toggle('" + encodeURI(mt) + "');";
+					}
+					autoTag[mt] = true;
+				} else {
+					addScore(suggestedTag, it, 1);
+					addScore(suggestedTag, it, 1);
 				}
-				autoTag[mt] = true;
 			}
 		}
 	}
 } else {
 //現在ブックマークしているタグを推薦（イラストのタグを除く）
 	for(var ot in onTagList) {
-		if(!(ot in imgTagList)) {
-			addScore(suggestedTag, ot, 1);
-			addScore(suggestedTag, ot, 1);
-		}
+		addScore(suggestedTag, ot, 1);
+		addScore(suggestedTag, ot, 1);
 	}
 }
-
 //画像がブックマークされているタグ
 function textToDoc(html) {
 //ほぼコピペ: http://d.hatena.ne.jp/furyu-tei/20100612/1276275088
@@ -118,7 +140,7 @@ var outerTagSrc = html.getElementsByClassName("link_purple linkStyle");
 var outerTagList = {};
 for(var i = 0; i < outerTagSrc.length; i++) {
 	var ot = outerTagSrc[i].getElementsByTagName("a")[0].text;
-	if(ot != "B" && ot != "pixivTouch") {
+	if(ot != "B" && ot != "pixivTouch" && ot != "pixivMobile") {
 		addScore(outerTagList, ot, 1);
 	}
 }
@@ -277,6 +299,9 @@ if(resultTag.length >= 1) {
 		click2(a);
 
 		var click3 = function (a){
+		  if(!(resultTag[i].key in imgTagLink)) {
+		    return;
+		  }
 			imgTagLink[resultTag[i].key].addEventListener("click", function(){
 				if(a.getAttribute("class") != "tag on") {
 					a.setAttribute("class", "tag on");
@@ -285,7 +310,7 @@ if(resultTag.length >= 1) {
 				}
 			}, false);
 		};
-		if(rt in onTagList) {
+		if(rt in imgTagList) {
 			click3(a);
 		}
 	}
@@ -293,6 +318,8 @@ if(resultTag.length >= 1) {
 	div.appendChild(suggest);
 	imgTagTable.parentNode.insertBefore(div, imgTagTable.nextSibling);
 }
+
+});
 })();
 
 
