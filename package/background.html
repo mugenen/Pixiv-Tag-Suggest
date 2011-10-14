@@ -12,9 +12,16 @@ function load() {
   if (!suggest) {
     suggest = "strict";
   }
+
+  var position = localStorage["position"];
+  if (!position) {
+    position = "under";
+  }
+
   config = {
     auto_select: auto_select,
-    suggest: suggest
+    suggest: suggest,
+    position: position
   };
 }
 

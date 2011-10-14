@@ -1,5 +1,6 @@
 (function(){
 var config = null;
+
 chrome.extension.sendRequest({type:"get"}, function(response) {
   config = response;
 
@@ -25,9 +26,9 @@ if(config.suggest == "strict") {
   var maxIncludeTagRate = 12;//短い側のタグが含まれている長い側のタグの文字数が短い側の何倍かの上限
   //LCS用パラメータ
   var minLCS = 3;//最長共通部分文字列(LCS)の下限
-  var minLCSRateLong = 0.5;//長い側のタグに占める共通部分文字列の割合の下限
-  var minLCSRateShort = 0.5;//短い側のタグに占める共通部分文字列の割合の下限
-  var maxLCSTagRateLong = 9;//LCSが含まれている長い側のタグの文字数がLCSの何倍かの上限
+  var minLCSRateLong = 0.7;//長い側のタグに占める共通部分文字列の割合の下限
+  var minLCSRateShort = 0.7;//短い側のタグに占める共通部分文字列の割合の下限
+  var maxLCSTagRateLong = 6;//LCSが含まれている長い側のタグの文字数がLCSの何倍かの上限
   var maxLCSTagRateShort = 2;//LCSが含まれている短い側のタグの文字数がLCSの何倍かの上限
 }
 
@@ -316,7 +317,12 @@ if(resultTag.length >= 1) {
 	}
 
 	div.appendChild(suggest);
-	imgTagTable.parentNode.insertBefore(div, imgTagTable.nextSibling);
+
+	if(config.position == "under") {
+		imgTagTable.parentNode.insertBefore(div, imgTagTable.nextSibling);
+	} else {
+		imgTagTable.parentNode.insertBefore(div, imgTagTable);
+	}
 }
 
 });
