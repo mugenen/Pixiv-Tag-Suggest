@@ -56,7 +56,7 @@ for(var i = 0; i < imgTagSrc.length; i++) {
 	imgTagLink[imgTagSrc[i].text] = imgTagSrc[i];
 }
 //現在ブックマークしているタグ
-var onTagSrc = document.getElementById("input_tag").getAttribute("value").split(/\s+|　+/);
+var onTagSrc = document.getElementById("input_tag").getAttribute("value").replace(/^\s*|\s*$/g, "").split(/\s+|　+/);
 var onTagList = {};
 //onTagSrcは空白を含む
 for(var i = 0; i < onTagSrc.length - 1; i++) {
@@ -153,7 +153,7 @@ for(var ot in outerTagList) {
 }
 
 //タイトルも類似判定用のタグとして追加
-imgTagList[document.getElementsByTagName("h3")[0].getElementsByTagName("a")[0].text] = true;
+//imgTagList[document.getElementsByTagName("h3")[0].getElementsByTagName("a")[0].text] = true;
 
 //Longest Common SubSequence
 function LCS(a, b) {
@@ -218,11 +218,6 @@ for(var it in imgTagList) {
 //ページのスクリプトの関数を実行するため．
 location.href = "javascript:void(function(){" + auto + "})();";
 
-var resultTag = new Array();
-for(var t in suggestedTag) {
-	resultTag.push({key: t, count: suggestedTag[t]});
-
-}
 
 //文字列比較
 function strcmp(a, b) {
@@ -235,96 +230,120 @@ function strcmp(a, b) {
 	return 0;
 }
 
-if(resultTag.length >= 1) {
-	resultTag.sort(function(a, b) {
-		if(a.count != b.count) {
-			return b.count - a.count;
-		} else if(tagLCS[a.key] != tagLCS[b.key]) {
-			return tagLCS[b.key] - tagLCS[a.key];
-		} else {
-			return strcmp(a, b);
-		}
-	});
-	
-	var div = document.createElement("div");
-	div.setAttribute("class", "bookmark_recommend_tag");
-	var suggest = document.createElement("ul");
-	suggest.setAttribute("class", "tagCloud");
-	var text = document.createElement("span");
-	text.appendChild(document.createTextNode("Suggest"));
-	div.appendChild(text);
-	div.appendChild(document.createElement("br"));
-
-	for(var i = 0; i < resultTag.length; i++) {
-		if(limit <= 0) {
-			break;
-		}
-		limit--;
-		
-		var rt = resultTag[i].key;
-		var li = document.createElement("li");
-		var a = document.createElement("a");
-		li.setAttribute("class", "level" + Math.max(7 - resultTag[i].count, 1));
-		
-		a.setAttribute("href", "javascript:void(0);");
-		if(rt in onTagList) {
-			a.setAttribute("class", "tag on");
-		}
-
-		var click = function (tag){
-			a.addEventListener("click", function(){
-				if(this.getAttribute("class") != "tag on") {
-					this.setAttribute("class", "tag on");
-				} else {
-					this.setAttribute("class", "tag");
-				}
-				location.href = "javascript:void(function(){pixiv.tag.toggle('" + encodeURI(tag) + "')})();";
-			},false)
-		};
-
-		click(rt);
-		a.appendChild(document.createTextNode(rt));
-		li.appendChild(a);
-		suggest.appendChild(li);
-
-		var click2 = function (a){
-			myTagLink[resultTag[i].key].addEventListener("click", function(){
-				if(a.getAttribute("class") != "tag on") {
-					a.setAttribute("class", "tag on");
-				} else {
-					a.setAttribute("class", "tag");
-				}
-			}, false);
-		};
-		
-		click2(a);
-
-		var click3 = function (a){
-		  if(!(resultTag[i].key in imgTagLink)) {
-		    return;
-		  }
-			imgTagLink[resultTag[i].key].addEventListener("click", function(){
-				if(a.getAttribute("class") != "tag on") {
-					a.setAttribute("class", "tag on");
-				} else {
-					a.setAttribute("class", "tag");
-				}
-			}, false);
-		};
-		if(rt in imgTagList) {
-			click3(a);
-		}
-	}
-
-	div.appendChild(suggest);
-
-	if(config.position == "under") {
-		imgTagTable.parentNode.insertBefore(div, imgTagTable.nextSibling);
-	} else {
-		imgTagTable.parentNode.insertBefore(div, imgTagTable);
-	}
+var keylist = [];
+for(var key in imgTagList) {
+  keylist.push(key);
 }
+chrome.extension.sendRequest({type:"suggest", source:keylist}, function(response) {
+  for(var s = 0; s < response.length; s++){
+    if(response[s][0] in myTagLink) {
+      addScore(suggestedTag, response[s][0], 1);
+      addScore(tagLCS, response[s][0], 1);
+      addScore(suggestedTag, response[s][0], 1);
+    }
+  }
+  var resultTag = new Array();
+  for(var t in suggestedTag) {
+  	resultTag.push({key: t, count: suggestedTag[t]});
 
+  }
+  if(resultTag.length >= 1) {
+  	resultTag.sort(function(a, b) {
+  		if(a.count != b.count) {
+  			return b.count - a.count;
+  		} else if(tagLCS[a.key] != tagLCS[b.key]) {
+  			return tagLCS[b.key] - tagLCS[a.key];
+  		} else {
+  			return strcmp(a, b);
+  		}
+  	});
+  	
+  	var div = document.createElement("div");
+  	div.setAttribute("class", "bookmark_recommend_tag");
+  	var suggest = document.createElement("ul");
+  	suggest.setAttribute("class", "tagCloud");
+  	var text = document.createElement("span");
+  	text.appendChild(document.createTextNode("Suggest"));
+  	div.appendChild(text);
+  	div.appendChild(document.createElement("br"));
+
+  	for(var i = 0; i < resultTag.length; i++) {
+  		if(limit <= 0) {
+  			break;
+  		}
+  		limit--;
+  		
+  		var rt = resultTag[i].key;
+  		var li = document.createElement("li");
+  		var a = document.createElement("a");
+  		li.setAttribute("class", "level" + Math.max(7 - resultTag[i].count, 1));
+  		
+  		a.setAttribute("href", "javascript:void(0);");
+  		if(rt in onTagList) {
+  			a.setAttribute("class", "tag on");
+  		}
+
+  		var click = function (tag){
+  			a.addEventListener("click", function(){
+  				if(this.getAttribute("class") != "tag on") {
+  					this.setAttribute("class", "tag on");
+  				} else {
+  					this.setAttribute("class", "tag");
+  				}
+  				location.href = "javascript:void(function(){pixiv.tag.toggle('" + encodeURI(tag) + "')})();";
+  			},false)
+  		};
+
+  		click(rt);
+  		a.appendChild(document.createTextNode(rt));
+  		li.appendChild(a);
+  		suggest.appendChild(li);
+
+  		var click2 = function (a){
+  			myTagLink[resultTag[i].key].addEventListener("click", function(){
+  				if(a.getAttribute("class") != "tag on") {
+  					a.setAttribute("class", "tag on");
+  				} else {
+  					a.setAttribute("class", "tag");
+  				}
+  			}, false);
+  		};
+  		
+  		click2(a);
+
+  		var click3 = function (a){
+  		  if(!(resultTag[i].key in imgTagLink)) {
+  		    return;
+  		  }
+  			imgTagLink[resultTag[i].key].addEventListener("click", function(){
+  				if(a.getAttribute("class") != "tag on") {
+  					a.setAttribute("class", "tag on");
+  				} else {
+  					a.setAttribute("class", "tag");
+  				}
+  			}, false);
+  		};
+  		if(rt in imgTagList) {
+  			click3(a);
+  		}
+  	}
+
+  	div.appendChild(suggest);
+
+  	if(config.position == "under") {
+  		imgTagTable.parentNode.insertBefore(div, imgTagTable.nextSibling);
+  	} else {
+  		imgTagTable.parentNode.insertBefore(div, imgTagTable);
+  	}
+  }
+});
+
+  var submit = function(){
+    var bookmarked = document.getElementById("input_tag").value.replace(/^\s*|\s*$/g, "").split(/\s+|　+/);
+    chrome.extension.sendRequest({type:"train", source:keylist, target:bookmarked}, function(response) {});
+  };
+  document.getElementsByClassName('btn_type03')[0].addEventListener("click", submit, false);
+  document.getElementsByClassName('btn_type03')[1].addEventListener("click", submit, false);
 });
 })();
 

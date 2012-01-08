@@ -16,6 +16,10 @@ function save_options() {
   var position = select3.children[select3.selectedIndex].value;
   localStorage["position"] = position;
 
+  var select4 = document.getElementById("learning");
+  var learning = select4.children[select4.selectedIndex].value;
+  localStorage["learning"] = learning;
+
   chrome.extension.sendRequest({type:"set"}, function(response) {});
   // Update status to let user know options were saved.
   var status = document.getElementById("status");
@@ -63,8 +67,23 @@ function restore_options() {
       }
     }
   }
+
+  var position = localStorage["learning"];
+  if (learning) {
+    var select4 = document.getElementById("learning");
+    for (var i = 0; i < select4.children.length; i++) {
+      var child4 = select4.children[i];
+      if (child4.value == learning) {
+        child4.selected = "true";
+        break;
+      }
+    }
+  }
 }
 
+function reset_data() {
+  chrome.extension.sendRequest({type:"reset"}, function(response) {});
+}
 </script>
 
 <body onload="restore_options()">
@@ -88,6 +107,14 @@ Position:
   <option value="under">Under</option>
   <option value="over">Over</option>
 </select>
+</p>
+<p>
+Learning:
+<select id="learning">
+  <option value="enable">Enable</option>
+  <option value="unable">Unable</option>
+</select>
+<button onclick="reset_data()">Reset data</button>
 </p>
 <button onclick="save_options()">Save</button>
 <p id="status"></p>
