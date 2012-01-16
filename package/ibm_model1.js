@@ -63,13 +63,13 @@ var IBM_Model_1 = function() {
       this.count(corpus[i]);
     }
   };
-  this.train = function(corpus) {
+  this.train = function(threshold) {
     var pair_trimmed_size = 0;
     
     //trimming
     var pair_trimmed = {};
     for(var i in this.pair) {
-      if(this.pair[i] >= 2) {
+      if(this.pair[i] >= threshold) {
         pair_trimmed[i] = this.pair[i];
         pair_trimmed_size += 1;
       }

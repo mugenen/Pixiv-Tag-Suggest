@@ -58,8 +58,7 @@ for(var i = 0; i < imgTagSrc.length; i++) {
 //現在ブックマークしているタグ
 var onTagSrc = document.getElementById("input_tag").getAttribute("value").replace(/^\s*|\s*$/g, "").split(/\s+|　+/);
 var onTagList = {};
-//onTagSrcは空白を含む
-for(var i = 0; i < onTagSrc.length - 1; i++) {
+for(var i = 0; i < onTagSrc.length; i++) {
 	onTagList[onTagSrc[i]] = true;
 }
 
@@ -77,7 +76,7 @@ function addScore(hash, key, weight) {
 		hash[key] = 1;
 	}
 }
-if(onTagSrc.length < 2) {
+if(onTagSrc[0] === '') {
 //完全一致
 	for(var it in imgTagList) {
 		for(var mt in myTagList){
