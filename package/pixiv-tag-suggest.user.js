@@ -234,11 +234,13 @@ for(var key in imgTagList) {
   keylist.push(key);
 }
 chrome.extension.sendRequest({type:"suggest", source:keylist}, function(response) {
-  for(var s = 0; s < response.length; s++){
-    if(response[s][0] in myTagLink) {
-      addScore(suggestedTag, response[s][0], 1);
-      addScore(tagLCS, response[s][0], 1);
-      addScore(suggestedTag, response[s][0], 1);
+  for(var s = 0; s < response.length; s++) {
+    for(var z in myTagLink) {
+      if(response[s][0].match(new RegExp('^' + z + '$', 'i'))) {
+        addScore(suggestedTag, z, 1);
+        addScore(tagLCS, z, 1);
+        addScore(suggestedTag, z, 1);
+      }
     }
   }
   var resultTag = new Array();

@@ -56,7 +56,7 @@ chrome.extension.onRequest.addListener(
         model.countOne([request.target, request.source]);
         count++;
         if(count >= 2) {
-          model.train(2);
+          model.train(2, 0.3);
           count -= 2;
         }
         localStorage["model"] = JSON.stringify(model)

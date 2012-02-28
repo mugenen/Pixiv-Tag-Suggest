@@ -63,7 +63,7 @@ var IBM_Model_1 = function() {
       this.count(corpus[i]);
     }
   };
-  this.train = function(threshold) {
+  this.train = function(threshold, prob_threshold) {
     var pair_trimmed_size = 0;
     
     //trimming
@@ -103,7 +103,7 @@ var IBM_Model_1 = function() {
     var prob = {};
     for(var i in t) {
       var p = Pair.fromString(i);
-      if(t[p] <= 0.1) {
+      if(t[p] <= prob_threshold) {
           continue;
       }
       if(prob[p.source] === undefined) {
