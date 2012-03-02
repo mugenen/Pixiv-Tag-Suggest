@@ -1,92 +1,7 @@
 <html>
 <head><title>Pixiv Tag Suggest Options</title></head>
-<script type="text/javascript">
 
-// Saves options to localStorage.
-function save_options() {
-  var select = document.getElementById("auto_select");
-  var auto_select = select.children[select.selectedIndex].value;
-  localStorage["auto_select"] = auto_select;
-
-  var select2 = document.getElementById("suggest");
-  var suggest = select2.children[select2.selectedIndex].value;
-  localStorage["suggest"] = suggest;
-
-  var select3 = document.getElementById("position");
-  var position = select3.children[select3.selectedIndex].value;
-  localStorage["position"] = position;
-
-  var select4 = document.getElementById("learning");
-  var learning = select4.children[select4.selectedIndex].value;
-  localStorage["learning"] = learning;
-
-  chrome.extension.sendRequest({type:"set"}, function(response) {});
-  // Update status to let user know options were saved.
-  var status = document.getElementById("status");
-  status.innerHTML = "Options Saved.";
-  setTimeout(function() {
-    status.innerHTML = "";
-  }, 1000);
-
-}
-
-// Restores select box state to saved value from localStorage.
-function restore_options() {
-  var auto_select = localStorage["auto_select"];
-  if (auto_select) {
-    var select = document.getElementById("auto_select");
-    for (var i = 0; i < select.children.length; i++) {
-      var child = select.children[i];
-      if (child.value == auto_select) {
-        child.selected = "true";
-        break;
-      }
-    }
-  }
-
-  var suggest = localStorage["suggest"];
-  if (suggest) {
-    var select2 = document.getElementById("suggest");
-    for (var i = 0; i < select2.children.length; i++) {
-      var child2 = select2.children[i];
-      if (child2.value == suggest) {
-        child2.selected = "true";
-        break;
-      }
-    }
-  }
-
-  var position = localStorage["position"];
-  if (position) {
-    var select3 = document.getElementById("position");
-    for (var i = 0; i < select3.children.length; i++) {
-      var child3 = select3.children[i];
-      if (child3.value == position) {
-        child3.selected = "true";
-        break;
-      }
-    }
-  }
-
-  var position = localStorage["learning"];
-  if (learning) {
-    var select4 = document.getElementById("learning");
-    for (var i = 0; i < select4.children.length; i++) {
-      var child4 = select4.children[i];
-      if (child4.value == learning) {
-        child4.selected = "true";
-        break;
-      }
-    }
-  }
-}
-
-function reset_data() {
-  chrome.extension.sendRequest({type:"reset"}, function(response) {});
-}
-</script>
-
-<body onload="restore_options()">
+<body>
 <p>
 Auto Select:
 <select id="auto_select">
@@ -114,9 +29,11 @@ Learning:
   <option value="enable">Enable</option>
   <option value="unable">Unable</option>
 </select>
-<button onclick="reset_data()">Reset data</button>
+<button onclick="resetData()">Reset data</button>
 </p>
-<button onclick="save_options()">Save</button>
+<button onclick="saveOptions()">Save</button>
 <p id="status"></p>
 </body>
+<script type="text/javascript" src="./options.js">
+</script>
 </html>

@@ -1,0 +1,64 @@
+util = require('util')
+exec = require('child_process').exec
+fs = require('fs');
+
+bare = ['ibm_model1', 'background', 'options']
+nobare = ['pixiv-tag-suggest.user']
+test = ['ibm_model1_test.coffee']
+
+testFunc = (func = -> console.log('Success!')) ->
+    if test? and test[0] != ''
+        exit = exec "coffee #{test.join(' ')}", (error, stdout, stderr) ->
+            if stdout? and stdout != ''
+                console.log('stdout: ' + stdout)
+            if stderr? and stderr != ''
+                console.log('stderr: ' + stderr)
+            if error? and error != ''
+                console.log('exec error: ' + error);
+            else
+                func()
+
+task 'test', 'test coffee', -> 
+    testFunc()
+
+compile = (t, type = '-c') ->
+    console.log "compile #{t}"
+    exec "coffee -o package #{type} #{t}", (error, stdout, stderr) ->
+        if stdout? and stdout != ''
+            console.log('stdout: ' + stdout)
+        if stderr? and stderr != ''
+            console.log('stderr: ' + stderr)
+        if error? and error != ''
+            console.log('exec error: ' + error);
+
+checkAndCompile = (target, type = '-c') ->
+    if target? and target[0] != ''
+        for t in target
+            cs = fs.statSync "#{t}.coffee"
+            try
+                js = fs.statSync "package/#{t}.js"
+                continue if cs.mtime < js.mtime
+            catch error
+                null
+            compile(t, type)
+
+task 'bare', 'compile bare coffee', -> checkAndCompile(bare, '-bc')
+
+task 'nobare', 'compile nobare coffee', -> checkAndCompile(nobare)
+
+task 'all', 'compile all coffee', ->
+    testFunc ->
+        invoke('bare')
+        invoke('nobare')
+
+task 'clean', 'remove all js', ->
+    for f in bare.concat(nobare)
+        continue if f == ''
+        try
+            fs.unlinkSync "package/#{f}.js", (err) ->
+                if err
+                    throw err
+        catch error
+            console.log error
+
+
