@@ -4,7 +4,10 @@ var IBM_Model_1;
 IBM_Model_1 = (function() {
   var Pair, add;
 
-  function IBM_Model_1() {}
+  function IBM_Model_1() {
+    this.prob = {};
+    this.pair = {};
+  }
 
   add = function(hash, key, num) {
     if (key in hash) {
@@ -13,10 +16,6 @@ IBM_Model_1 = (function() {
       return hash[key] = num;
     }
   };
-
-  IBM_Model_1.prototype.prob = {};
-
-  IBM_Model_1.prototype.pair = {};
 
   Pair = (function() {
 

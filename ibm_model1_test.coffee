@@ -6,8 +6,11 @@ assert.ok(ibm1);
 
 
 model = new ibm1
+
 assert.deepEqual(model.preprocess_tag(['aあ', '2aテスト']), ['Aあ', '2Aテスト', 'NULLTAG']);
 assert.deepEqual(model.preprocess_tag(['aあ', '2aテスト']), ['Aあ', '2Aテスト', 'NULLTAG']);
+
+assert.deepEqual([], model.suggest(['test12']))
 
 corpus1 = [[['aaa', '2aAA'], ['aaa', '2zzzA']]]
 model.preprocess(corpus1)

@@ -2,13 +2,13 @@
 
 class IBM_Model_1
     constructor: ->
+        @prob = {}
+        @pair = {}
     add = (hash, key, num) ->
         if key of hash
             hash[key] += num;
         else
             hash[key] = num;
-    prob: {}
-    pair: {}
     class Pair
         constructor: (@target, @source) ->
             @string = "#{@target} #{@source}"

@@ -59,7 +59,7 @@
   };
 
   LCS = function(a, b) {
-    var i, match, sizea, sizeb, table;
+    var i, j, match, sizea, sizeb, table;
     sizea = a.length + 1;
     sizeb = b.length + 1;
     table = new Array(sizea);
@@ -67,12 +67,12 @@
       table[i] = new Array(sizeb);
     }
     for (i = 0; 0 <= sizea ? i < sizea : i > sizea; 0 <= sizea ? i++ : i--) {
-      for (i = 0; 0 <= sizeb ? i < sizeb : i > sizeb; 0 <= sizeb ? i++ : i--) {
+      for (j = 0; 0 <= sizeb ? j < sizeb : j > sizeb; 0 <= sizeb ? j++ : j--) {
         table[i][j] = 0;
       }
     }
-    for (i = 0; 0 <= sizea ? i < sizea : i > sizea; 0 <= sizea ? i++ : i--) {
-      for (i = 0; 0 <= sizeb ? i < sizeb : i > sizeb; 0 <= sizeb ? i++ : i--) {
+    for (i = 1; 1 <= sizea ? i < sizea : i > sizea; 1 <= sizea ? i++ : i--) {
+      for (j = 1; 1 <= sizeb ? j < sizeb : j > sizeb; 1 <= sizeb ? j++ : j--) {
         match = a[i - 1] === b[j - 1] ? 1 : 0;
         table[i][j] = Math.max(table[i - 1][j - 1] + match, table[i - 1][j], table[i][j - 1]);
       }
@@ -101,8 +101,9 @@
   };
 
   getImageTag = function() {
-    var i, imgTagLink, imgTagList, imgTagSrc, _i, _len;
-    imgTagSrc = document.querySelectorAll('.bookmark_recommend_tag a');
+    var i, imgTagLink, imgTagList, imgTagSrc, imgTagTable, _i, _len;
+    imgTagTable = document.querySelector(".bookmark_recommend_tag");
+    imgTagSrc = imgTagTable.querySelectorAll("a");
     imgTagList = {};
     imgTagLink = {};
     for (_i = 0, _len = imgTagSrc.length; _i < _len; _i++) {
@@ -118,7 +119,7 @@
 
   getMyBookmarkedTag = function() {
     var i, onTagList, onTagSrc, _i, _len;
-    onTagSrc = document.getElementById('input_tag').getAttribute('value').replace(/^\s*|\s*$/g, '').split(/\s+|　+/);
+    onTagSrc = document.getElementById('input_tag').value.replace(/^\s*|\s*$/g, '').split(/\s+|　+/);
     onTagList = {};
     for (_i = 0, _len = onTagSrc.length; _i < _len; _i++) {
       i = onTagSrc[_i];
@@ -153,10 +154,16 @@
   };
 
   include = function(a, b) {
+    var match;
     if (a.length < b.length) {
-      return b.match(new RegExp(a.replace(/\W/g, '\\$&'), 'i'));
+      match = b.match(new RegExp(a.replace(/\W/g, '\\$&'), 'i'));
     } else {
-      return a.match(new RegExp(b.replace(/\W/g, '\\$&'), 'i'));
+      match = a.match(new RegExp(b.replace(/\W/g, '\\$&'), 'i'));
+    }
+    if (match != null) {
+      return true;
+    } else {
+      return false;
     }
   };
 
@@ -181,7 +188,7 @@
         for (mt in myTagLink) {
           if (it === mt) {
             if (config.auto_select === 'on') {
-              if (!it in onTagList) {
+              if (!(it in onTagList)) {
                 auto += "pixiv.tag.toggle('" + (encodeURI(mt)) + "');";
               }
               autoTag[mt] = true;
@@ -204,7 +211,7 @@
     }
     for (it in imgTagList) {
       for (mt in myTagLink) {
-        if (!mt in autoTag) {
+        if (!(mt in autoTag)) {
           minlen = Math.min(mt.length, it.length);
           maxlen = Math.max(mt.length, it.length);
           if (it.length < minTag) continue;
@@ -238,7 +245,7 @@
       for (_i = 0, _len = response.length; _i < _len; _i++) {
         s = response[_i];
         for (z in myTagLink) {
-          if (s[0].match(new RegExp("^" + z + "$", 'i'))) {
+          if (s[0].match(new RegExp("^" + z + "$", 'i')) && !(z in autoTag)) {
             addScore(suggestedTag, z, 1);
             addScore(suggestedTag, z, 1);
             addScore(tagLCS, z, 1);
@@ -331,6 +338,7 @@
     });
     submit = function() {
       var bookmarked;
+      onTagSrc = getMyBookmarkedTag().onTagSrc;
       bookmarked = onTagSrc;
       return chrome.extension.sendRequest({
         type: 'train',

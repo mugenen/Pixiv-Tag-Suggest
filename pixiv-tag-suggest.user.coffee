@@ -64,11 +64,11 @@ LCS = (a, b) ->
     for i in [0...sizea]
         table[i] = new Array(sizeb);
     for i in [0...sizea]
-        for i in [0...sizeb]
+        for j in [0...sizeb]
             table[i][j] = 0;
 
-    for i in [0...sizea]
-        for i in [0...sizeb]
+    for i in [1...sizea]
+        for j in [1...sizeb]
             match = if a[i - 1] == b[j - 1] then 1 else 0;
             table[i][j] = Math.max(table[i - 1][j - 1] + match, table[i - 1][j], table[i][j - 1]);
     
@@ -85,7 +85,7 @@ strcmp = (a, b) ->
 getMyTagLink = ->
     myTagLink = {}
     tagCloud = document.getElementsByClassName('tagCloud')[0];
-    if not tagCloud?
+    if not(tagCloud?)
         return;
 
     myTagSrc = tagCloud.getElementsByTagName('a');
@@ -95,7 +95,8 @@ getMyTagLink = ->
     myTagLink
 
 getImageTag = ->
-    imgTagSrc = document.querySelectorAll('.bookmark_recommend_tag a');
+    imgTagTable = document.querySelector(".bookmark_recommend_tag");
+    imgTagSrc = imgTagTable.querySelectorAll("a");
     imgTagList = {};
     imgTagLink = {};
     for i in imgTagSrc
@@ -105,7 +106,7 @@ getImageTag = ->
     imgTagLink: imgTagLink
 
 getMyBookmarkedTag = ->
-    onTagSrc = document.getElementById('input_tag').getAttribute('value').replace(/^\s*|\s*$/g, '').split(/\s+|　+/);
+    onTagSrc = document.getElementById('input_tag').value.replace(/^\s*|\s*$/g, '').split(/\s+|　+/);
     onTagList = {};
     for i in onTagSrc
         if i != ''
@@ -134,9 +135,10 @@ getOthersBookmarkedTagList = ->
 include = (a, b) ->
     if a.length < b.length
     #エスケープ．参考: http://subtech.g.hatena.ne.jp/cho45/20090513/1242199703
-        b.match(new RegExp(a.replace(/\W/g,'\\$&'), 'i'));
+        match = b.match(new RegExp(a.replace(/\W/g,'\\$&'), 'i'));
     else
-        a.match(new RegExp(b.replace(/\W/g,'\\$&'), 'i'));
+        match = a.match(new RegExp(b.replace(/\W/g,'\\$&'), 'i'));
+    if match? then true else false
 
 chrome.extension.sendRequest {type:'get'}, (response) ->
     config = response;
@@ -176,7 +178,7 @@ chrome.extension.sendRequest {type:'get'}, (response) ->
             for mt of myTagLink
                 if it == mt
                     if config.auto_select == 'on'
-                        if not it of onTagList
+                        if not(it of onTagList)
                             auto += "pixiv.tag.toggle('#{encodeURI(mt)}');";
                         autoTag[mt] = true;
                     else
@@ -194,7 +196,7 @@ chrome.extension.sendRequest {type:'get'}, (response) ->
     #部分一致
     for it of imgTagList
         for mt of myTagLink
-            if not mt of autoTag
+            if not(mt of autoTag)
                 minlen = Math.min(mt.length, it.length);
                 maxlen = Math.max(mt.length, it.length);
                 if it.length < minTag
@@ -217,7 +219,7 @@ chrome.extension.sendRequest {type:'get'}, (response) ->
     chrome.extension.sendRequest {type:'suggest', source:keylist}, (response) ->
         for s in response
             for z of myTagLink
-                if s[0].match(new RegExp("^#{z}$", 'i'))
+                if s[0].match(new RegExp("^#{z}$", 'i')) and not(z of autoTag)
                     addScore(suggestedTag, z, 1);
                     addScore(suggestedTag, z, 1);
                     addScore(tagLCS, z, 1);
@@ -300,6 +302,7 @@ chrome.extension.sendRequest {type:'get'}, (response) ->
                 imgTagTable.parentNode.insertBefore(div, imgTagTable);
 
     submit = ->
+        {onTagSrc} = getMyBookmarkedTag()
         bookmarked = onTagSrc
         chrome.extension.sendRequest({type:'train', source:keylist, target:bookmarked}, (response) ->);
     document.getElementsByClassName('btn_type03')[0]?.addEventListener('click', submit, false);
