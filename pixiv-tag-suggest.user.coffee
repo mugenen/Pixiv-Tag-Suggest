@@ -2,7 +2,7 @@ config = null;
 
 getParam = (config) ->
     if config.suggest == 'strict'
-        limit: 10
+        limit: 7
         minTag: 1
         minOuter: 2
         maxIncludeTagRate: 8
@@ -222,8 +222,11 @@ chrome.extension.sendRequest {type:'get'}, (response) ->
                 if s[0].match(new RegExp("^#{z}$", 'i')) and not(z of autoTag)
                     addScore(suggestedTag, z, 1);
                     addScore(suggestedTag, z, 1);
-                    addScore(tagLCS, z, 1);
-                    addScore(tagLCS, z, 4);
+
+                    lcs = 0
+                    for it of imgTagList
+                        lcs = Math.max(LCS(z, it), lcs)
+                    addScore(tagLCS, z, lcs);
 
         resultTag = ({key: t, count: suggestedTag[t]} for t of suggestedTag)
         if resultTag.length >= 1

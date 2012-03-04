@@ -6,7 +6,7 @@
   getParam = function(config) {
     if (config.suggest === 'strict') {
       return {
-        limit: 10,
+        limit: 7,
         minTag: 1,
         minOuter: 2,
         maxIncludeTagRate: 8,
@@ -241,15 +241,18 @@
       type: 'suggest',
       source: keylist
     }, function(response) {
-      var a, addEventImageTag, addEventMyTag, addEventThisTag, div, i, imgTagTable, li, resultTag, rt, s, suggest, t, text, z, _i, _j, _len, _len2;
+      var a, addEventImageTag, addEventMyTag, addEventThisTag, div, i, imgTagTable, it, li, resultTag, rt, s, suggest, t, text, z, _i, _j, _len, _len2;
       for (_i = 0, _len = response.length; _i < _len; _i++) {
         s = response[_i];
         for (z in myTagLink) {
           if (s[0].match(new RegExp("^" + z + "$", 'i')) && !(z in autoTag)) {
             addScore(suggestedTag, z, 1);
             addScore(suggestedTag, z, 1);
-            addScore(tagLCS, z, 1);
-            addScore(tagLCS, z, 4);
+            lcs = 0;
+            for (it in imgTagList) {
+              lcs = Math.max(LCS(z, it), lcs);
+            }
+            addScore(tagLCS, z, lcs);
           }
         }
       }
