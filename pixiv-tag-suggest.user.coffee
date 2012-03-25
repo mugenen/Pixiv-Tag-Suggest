@@ -95,13 +95,14 @@ getMyTagLink = ->
     myTagLink
 
 getImageTag = ->
-    imgTagTable = document.querySelector(".bookmark_recommend_tag");
-    imgTagSrc = imgTagTable.querySelectorAll("a");
     imgTagList = {};
     imgTagLink = {};
-    for i in imgTagSrc
-        imgTagList[i.text] = true;
-        imgTagLink[i.text] = i;
+    imgTagTable = document.querySelectorAll(".bookmark_recommend_tag");
+    if imgTagTable.length != 1#画像のタグが空でないとき
+        imgTagSrc = imgTagTable[0].querySelectorAll("a");
+        for i in imgTagSrc
+            imgTagList[i.text] = true;
+            imgTagLink[i.text] = i;
     imgTagList: imgTagList
     imgTagLink: imgTagLink
 

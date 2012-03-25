@@ -102,14 +102,16 @@
 
   getImageTag = function() {
     var i, imgTagLink, imgTagList, imgTagSrc, imgTagTable, _i, _len;
-    imgTagTable = document.querySelector(".bookmark_recommend_tag");
-    imgTagSrc = imgTagTable.querySelectorAll("a");
     imgTagList = {};
     imgTagLink = {};
-    for (_i = 0, _len = imgTagSrc.length; _i < _len; _i++) {
-      i = imgTagSrc[_i];
-      imgTagList[i.text] = true;
-      imgTagLink[i.text] = i;
+    imgTagTable = document.querySelectorAll(".bookmark_recommend_tag");
+    if (imgTagTable.length !== 1) {
+      imgTagSrc = imgTagTable[0].querySelectorAll("a");
+      for (_i = 0, _len = imgTagSrc.length; _i < _len; _i++) {
+        i = imgTagSrc[_i];
+        imgTagList[i.text] = true;
+        imgTagLink[i.text] = i;
+      }
     }
     return {
       imgTagList: imgTagList,
