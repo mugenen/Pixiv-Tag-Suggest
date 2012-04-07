@@ -1,6 +1,6 @@
 {
   "name": "Pixiv Tag Suggest",
-  "version": "2.7",
+  "version": "2.8",
   "description": "pixivでブックマークするときに自分のタグが，作品のタグやブックマークされているタグに似ていたら推薦する．全く同一の場合は自動選択",
   "options_page": "options.html",
   "background_page": "background.html",
@@ -13,6 +13,7 @@
   "content_scripts": [
     {
       "js": [
+        "jquery-1.7.2.min.js",
         "pixiv-tag-suggest.user.js"
       ],
       "matches": [
