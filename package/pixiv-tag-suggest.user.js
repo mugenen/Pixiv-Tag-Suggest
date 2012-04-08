@@ -131,7 +131,7 @@
     if (document.URL.match('illust')) {
       url = "http://www.pixiv.net/bookmark_detail.php?illust_id=" + (document.URL.match('illust_id=([0-9]+)')[1]);
     } else {
-      url = "http://www.pixiv.net/novel/bookmark_detail.php?id=" + (document.URL.match('illust_id=([0-9]+)')[1]);
+      url = "http://www.pixiv.net/novel/bookmark_detail.php?id=" + (document.URL.match('id=([0-9]+)')[1]);
     }
     xhr = $.ajax({
       url: url,

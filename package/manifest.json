@@ -1,6 +1,6 @@
 {
   "name": "Pixiv Tag Suggest",
-  "version": "3.0",
+  "version": "3.1",
   "description": "pixivでブックマークするときに自分のタグが，作品のタグやブックマークされているタグに似ていたら推薦する．全く同一の場合は自動選択",
   "options_page": "options.html",
   "background_page": "background.html",
