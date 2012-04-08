@@ -172,6 +172,7 @@
         if (it === mt) ret.push(it);
       }
     }
+    console.log('完全一致したタグ', ret);
     return ret;
   };
 
@@ -231,11 +232,13 @@
           maxlen = Math.max(mt.length, it.length);
           if (it.length < param.minTag) continue;
           if (include(it, mt) && param.maxIncludeTagRate * minlen >= maxlen) {
-            _results2.push(addScore(suggestedTag, mt, 2));
+            addScore(suggestedTag, mt, 2);
+            _results2.push(console.log('包含関係にあるタグ', it, mt));
           } else {
             lcs = LCS(mt, it);
             if (lcs >= param.minLCS && lcs >= param.minLCSRateShort * minlen && lcs >= param.minLCSRateLong * maxlen) {
-              _results2.push(addScore(suggestedTag, mt, 1));
+              addScore(suggestedTag, mt, 1);
+              _results2.push(console.log('文字列が似ているタグ', it, mt));
             } else if (lcs > 0 && param.maxLCSTagRateShort * lcs >= minlen && param.maxLCSTagRateLong * lcs >= maxlen) {
               _results2.push(addScore(tagLCS, mt, lcs));
             } else {
@@ -290,8 +293,7 @@
   };
 
   addLearnedTags = function(tags) {
-    var it, lcs, reg, s, z, _i, _len, _results;
-    reg = new RegExp("^" + z + "$", 'i');
+    var it, lcs, s, z, _i, _len, _results;
     _results = [];
     for (_i = 0, _len = tags.length; _i < _len; _i++) {
       s = tags[_i];
@@ -299,7 +301,7 @@
         var _results2;
         _results2 = [];
         for (z in myTagLink) {
-          if (s[0].match(reg) && !(z in autoTag)) {
+          if (s[0].match(new RegExp("^" + z + "$", 'i')) && !(z in autoTag)) {
             addScore(suggestedTag, z, 1);
             addScore(suggestedTag, z, 1);
             lcs = 0;
@@ -392,6 +394,12 @@
     addScore(tagLCS, mt, 1);
   }
 
+  console.log('画像のタグ', imgTagList);
+
+  console.log('現在ブックマークしているタグ', onTagList);
+
+  console.log('他のユーザーがブックマークしているタグ', outerTagList);
+
   getConfigAsync().done(function(config) {
     var key, keylist, param;
     param = getParam(config);
@@ -409,6 +417,7 @@
     if (config.learning === 'enable') addCounter(keylist);
     return $.when(getSuggestAsync(config, keylist)).done(function(response) {
       var resultTag, t;
+      console.log('学習で推薦されたタグ', response);
       addLearnedTags(response);
       resultTag = (function() {
         var _results;

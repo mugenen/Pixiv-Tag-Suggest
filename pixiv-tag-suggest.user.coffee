@@ -133,6 +133,7 @@ identical = (imgTagLink, myTagLink) ->
         for mt of myTagLink
             if it == mt
                 ret.push(it)
+    console.log('完全一致したタグ', ret)
     ret
 
 getConfigAsync = () ->
@@ -173,10 +174,12 @@ partialMatch = (param) ->
                 continue;
             if include(it, mt) and param.maxIncludeTagRate * minlen >= maxlen
                 addScore(suggestedTag, mt, 2);
+                console.log('包含関係にあるタグ', it, mt)
             else
                 lcs = LCS(mt, it);
                 if lcs >= param.minLCS and lcs >= param.minLCSRateShort * minlen and lcs >= param.minLCSRateLong * maxlen
                     addScore(suggestedTag, mt, 1);
+                    console.log('文字列が似ているタグ', it, mt)
                 else if lcs > 0 and param.maxLCSTagRateShort * lcs >= minlen and param.maxLCSTagRateLong * lcs >= maxlen
                     addScore(tagLCS, mt, lcs);
 
@@ -206,10 +209,9 @@ addOtherBookmarkedTags = (param) ->
             imgTagList[ot] = true;
 
 addLearnedTags = (tags) ->
-    reg = new RegExp("^#{z}$", 'i')
     for s in tags
         for z of myTagLink
-            if s[0].match(reg) and not(z of autoTag)
+            if s[0].match(new RegExp("^#{z}$", 'i')) and not(z of autoTag)
                 addScore(suggestedTag, z, 1);
                 addScore(suggestedTag, z, 1);
 
@@ -291,6 +293,9 @@ tagLCS = {}
 for mt of myTagLink
     addScore(tagLCS, mt, 1);
 
+console.log('画像のタグ', imgTagList)
+console.log('現在ブックマークしているタグ', onTagList)
+console.log('他のユーザーがブックマークしているタグ', outerTagList)
 
 getConfigAsync().done (config) ->
     param = getParam(config)
@@ -306,8 +311,8 @@ getConfigAsync().done (config) ->
     if config.learning == 'enable'
         addCounter(keylist)
 
-
     $.when(getSuggestAsync(config, keylist)).done (response) ->
+        console.log('学習で推薦されたタグ', response)
         addLearnedTags(response)
         
         resultTag = ({key: t, count: suggestedTag[t]} for t of suggestedTag)
