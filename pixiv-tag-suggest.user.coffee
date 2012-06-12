@@ -174,16 +174,18 @@ partialMatch = (param) ->
                 continue;
             if include(it, mt) and param.maxIncludeTagRate * minlen >= maxlen
                 addScore(suggestedTag, mt, 2);
+                addReason(reason, mt, "包含: #{it}")
                 console.log('包含関係にあるタグ', it, mt)
             else
                 lcs = LCS(mt, it);
                 if lcs >= param.minLCS and lcs >= param.minLCSRateShort * minlen and lcs >= param.minLCSRateLong * maxlen
                     addScore(suggestedTag, mt, 1);
+                    addReason(reason, mt, "類似: #{it}")
                     console.log('文字列が似ているタグ', it, mt)
                 else if lcs > 0 and param.maxLCSTagRateShort * lcs >= minlen and param.maxLCSTagRateLong * lcs >= maxlen
                     addScore(tagLCS, mt, lcs);
 
-exaxtMatch = (config) ->
+exactMatch = (config) ->
     if onTagSrc[0] == ''
     #完全一致
         for it in identical(imgTagLink, myTagLink)
@@ -194,6 +196,7 @@ exaxtMatch = (config) ->
             else
                 addScore(suggestedTag, it, 1);
                 addScore(suggestedTag, it, 1);
+                addReason(reason, it, "一致: #{it}")
         #ページのスクリプトの関数を実行するため．
         location.href = "javascript:void(function(){#{auto}})();";
     else
@@ -201,6 +204,7 @@ exaxtMatch = (config) ->
         for ot of onTagList
             addScore(suggestedTag, ot, 1);
             addScore(suggestedTag, ot, 1);
+            addReason(reason, ot, "ブックマーク済み: #{ot}")
 
 
 addOtherBookmarkedTags = (param) ->
@@ -214,6 +218,7 @@ addLearnedTags = (tags) ->
             if s[0].match(new RegExp("^#{z}$", 'i')) and not(z of autoTag)
                 addScore(suggestedTag, z, 1);
                 addScore(suggestedTag, z, 1);
+                addReason(reason, z, "学習: #{s[2]}")
 
                 lcs = 0
                 for it of imgTagList
@@ -253,6 +258,9 @@ showResult = (resultTag, config, param) ->
         if rt of onTagList
             a.toggleClass('on')
 
+        if rt of reason
+            a.attr('title', reason[rt].join());
+
         a.text(rt);
         li.append(a);
         suggest.append(li);
@@ -278,11 +286,16 @@ showResult = (resultTag, config, param) ->
     else
        imgTagTable.before(div)
 
-
+addReason = (hash, key, string) ->
+    if key of hash
+        hash[key].push(string);
+    else
+        hash[key] = [string];
 
 suggestedTag = {};
 auto = '';
 autoTag = {};
+reason = {}
 
 myTagLink = getMyTagLink()
 {imgTagList, imgTagLink} = getImageTag()
@@ -302,7 +315,7 @@ getConfigAsync().done (config) ->
 
     addOtherBookmarkedTags(param)
 
-    exaxtMatch(config)
+    exactMatch(config)
     partialMatch(param)
 
 

@@ -89,6 +89,7 @@ class IBM_Model_1
         result = {};
         source = tags.slice(0);
         source = @preprocess_tag(source);
+        reason = {}
         for i in source
             if i == 'NULLTAG'
                 continue;
@@ -96,9 +97,13 @@ class IBM_Model_1
                 if j == 'NULLTAG'
                     continue;
                 add(result, j, this.prob[i][j])
+                if j of reason
+                    reason[j].push(i)
+                else
+                    reason[j] = [i]
         sort = [];
         for r, v of result
-            sort.push([r, v]);
+            sort.push([r, v, reason[r].join()]);
         sort.sort((a, b) -> b[1] - a[1])
         sort
         

@@ -154,22 +154,28 @@ IBM_Model_1 = (function() {
   };
 
   IBM_Model_1.prototype.suggest = function(tags) {
-    var i, j, r, result, sort, source, v, _i, _len;
+    var i, j, r, reason, result, sort, source, v, _i, _len;
     result = {};
     source = tags.slice(0);
     source = this.preprocess_tag(source);
+    reason = {};
     for (_i = 0, _len = source.length; _i < _len; _i++) {
       i = source[_i];
       if (i === 'NULLTAG') continue;
       for (j in this.prob[i]) {
         if (j === 'NULLTAG') continue;
         add(result, j, this.prob[i][j]);
+        if (j in reason) {
+          reason[j].push(i);
+        } else {
+          reason[j] = [i];
+        }
       }
     }
     sort = [];
     for (r in result) {
       v = result[r];
-      sort.push([r, v]);
+      sort.push([r, v, reason[r].join()]);
     }
     sort.sort(function(a, b) {
       return b[1] - a[1];

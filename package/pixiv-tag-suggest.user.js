@@ -1,5 +1,5 @@
 (function() {
-  var LCS, addCounter, addLearnedTags, addOtherBookmarkedTags, addScore, auto, autoTag, exaxtMatch, getConfigAsync, getImageTag, getMyBookmarkedTag, getMyTagLink, getOthersBookmarkedTagList, getParam, getSuggestAsync, identical, imgTagLink, imgTagList, include, mt, myTagLink, onTagList, onTagSrc, outerTagList, partialMatch, showResult, strcmp, suggestedTag, tagLCS, _ref, _ref2;
+  var LCS, addCounter, addLearnedTags, addOtherBookmarkedTags, addReason, addScore, auto, autoTag, exactMatch, getConfigAsync, getImageTag, getMyBookmarkedTag, getMyTagLink, getOthersBookmarkedTagList, getParam, getSuggestAsync, identical, imgTagLink, imgTagList, include, mt, myTagLink, onTagList, onTagSrc, outerTagList, partialMatch, reason, showResult, strcmp, suggestedTag, tagLCS, _ref, _ref2;
 
   getParam = function(config) {
     /*
@@ -233,11 +233,13 @@
           if (it.length < param.minTag) continue;
           if (include(it, mt) && param.maxIncludeTagRate * minlen >= maxlen) {
             addScore(suggestedTag, mt, 2);
+            addReason(reason, mt, "包含: " + it);
             _results2.push(console.log('包含関係にあるタグ', it, mt));
           } else {
             lcs = LCS(mt, it);
             if (lcs >= param.minLCS && lcs >= param.minLCSRateShort * minlen && lcs >= param.minLCSRateLong * maxlen) {
               addScore(suggestedTag, mt, 1);
+              addReason(reason, mt, "類似: " + it);
               _results2.push(console.log('文字列が似ているタグ', it, mt));
             } else if (lcs > 0 && param.maxLCSTagRateShort * lcs >= minlen && param.maxLCSTagRateLong * lcs >= maxlen) {
               _results2.push(addScore(tagLCS, mt, lcs));
@@ -252,7 +254,7 @@
     return _results;
   };
 
-  exaxtMatch = function(config) {
+  exactMatch = function(config) {
     var it, ot, _i, _len, _ref, _results;
     if (onTagSrc[0] === '') {
       _ref = identical(imgTagLink, myTagLink);
@@ -266,6 +268,7 @@
         } else {
           addScore(suggestedTag, it, 1);
           addScore(suggestedTag, it, 1);
+          addReason(reason, it, "一致: " + it);
         }
       }
       return location.href = "javascript:void(function(){" + auto + "})();";
@@ -273,7 +276,8 @@
       _results = [];
       for (ot in onTagList) {
         addScore(suggestedTag, ot, 1);
-        _results.push(addScore(suggestedTag, ot, 1));
+        addScore(suggestedTag, ot, 1);
+        _results.push(addReason(reason, ot, "ブックマーク済み: " + ot));
       }
       return _results;
     }
@@ -304,6 +308,7 @@
           if (s[0].match(new RegExp("^" + z + "$", 'i')) && !(z in autoTag)) {
             addScore(suggestedTag, z, 1);
             addScore(suggestedTag, z, 1);
+            addReason(reason, z, "学習: " + s[2]);
             lcs = 0;
             for (it in imgTagList) {
               lcs = Math.max(LCS(z, it), lcs);
@@ -349,6 +354,7 @@
       li.attr('class', 'level' + Math.max(7 - i.count, 1));
       a.attr('href', 'javascript:void(0);');
       if (rt in onTagList) a.toggleClass('on');
+      if (rt in reason) a.attr('title', reason[rt].join());
       a.text(rt);
       li.append(a);
       suggest.append(li);
@@ -374,11 +380,21 @@
     }
   };
 
+  addReason = function(hash, key, string) {
+    if (key in hash) {
+      return hash[key].push(string);
+    } else {
+      return hash[key] = [string];
+    }
+  };
+
   suggestedTag = {};
 
   auto = '';
 
   autoTag = {};
+
+  reason = {};
 
   myTagLink = getMyTagLink();
 
@@ -404,7 +420,7 @@
     var key, keylist, param;
     param = getParam(config);
     addOtherBookmarkedTags(param);
-    exaxtMatch(config);
+    exactMatch(config);
     partialMatch(param);
     keylist = (function() {
       var _results;
