@@ -1,40 +1,39 @@
-saveOptions = ->
-    saveOption = (name) ->
-        select = document.getElementById(name);
-        localStorage[name] = select.children[select.selectedIndex].value;
+$( ->
+    saveOptions = ->
+        saveOption = (name) ->
+            localStorage[name] = $("##{name}").val()
 
-    saveOption('auto_select');
- 
-    saveOption('suggest');
+        saveOption('auto_select');
+     
+        saveOption('suggest');
 
-    saveOption('position');
+        saveOption('position');
 
-    saveOption('learning');
+        saveOption('learning');
 
-    chrome.extension.sendRequest({type:'set'}, (response) ->);
+        chrome.extension.sendRequest({type:'set'}, (response) ->);
 
-    status = document.getElementById('status');
-    status.innerHTML = 'Options Saved.';
-    setTimeout( ->
-        status.innerHTML = '';
-    , 1000);
+        status = $('#status');
+        status.text('Options Saved.');
+        setTimeout( ->
+            status.text('');
+        , 1000);
 
-restoreOptions = ->
-    selectOption = (name) ->
-        option = localStorage[name];
-        if option?
-            select = document.getElementById(name);
-            for child in select.children
-                if child.value == option
-                    child.selected = 'true';
-                    break;
+    restoreOptions = ->
+        selectOption = (name) ->
+            option = localStorage[name];
+            if option?
+                $("##{name}").val(option)
 
-    selectOption('auto_select')
-    selectOption('suggest')
-    selectOption('position')
-    selectOption('learning')
+        selectOption('auto_select')
+        selectOption('suggest')
+        selectOption('position')
+        selectOption('learning')
 
-resetData = ->
-    chrome.extension.sendRequest({type:'reset'}, (response) ->);
-
-document.body.onload = restoreOptions;
+    resetData = ->
+        chrome.extension.sendRequest({type:'reset'}, (response) ->);
+    
+    restoreOptions()
+    $("#reset").click(-> resetData())
+    $("#save").click(-> saveOptions())
+);

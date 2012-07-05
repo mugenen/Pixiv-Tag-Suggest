@@ -57,4 +57,4 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
   }
 });
 
-document.body.onload = load;
+load();

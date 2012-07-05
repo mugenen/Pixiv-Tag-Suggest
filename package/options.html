@@ -1,6 +1,7 @@
 <html>
 <head><title>Pixiv Tag Suggest Options</title></head>
-
+<script type="text/javascript" src="./jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="./options.js"></script>
 <body>
 <p>
 Auto Select:
@@ -29,11 +30,9 @@ Learning:
   <option value="enable">Enable</option>
   <option value="unable">Unable</option>
 </select>
-<button onclick="resetData()">Reset data</button>
+<button id="reset">Reset data</button>
 </p>
-<button onclick="saveOptions()">Save</button>
+<button id="save">Save</button>
 <p id="status"></p>
 </body>
-<script type="text/javascript" src="./options.js">
-</script>
 </html>

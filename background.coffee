@@ -48,4 +48,4 @@ chrome.extension.onRequest.addListener (request, sender, sendResponse) ->
         model = new IBM_Model_1();
         delete localStorage['model'];
 
-document.body.onload = load;
+load();
