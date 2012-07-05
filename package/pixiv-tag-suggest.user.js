@@ -172,7 +172,7 @@
         if (it === mt) ret.push(it);
       }
     }
-    console.log('完全一致したタグ', ret);
+    console.log('Matched Tag', ret);
     return ret;
   };
 
@@ -233,14 +233,14 @@
           if (it.length < param.minTag) continue;
           if (include(it, mt) && param.maxIncludeTagRate * minlen >= maxlen) {
             addScore(suggestedTag, mt, 2);
-            addReason(reason, mt, "包含: " + it);
-            _results2.push(console.log('包含関係にあるタグ', it, mt));
+            addReason(reason, mt, "" + (chrome.i18n.getMessage('include')) + ": " + it);
+            _results2.push(console.log('Partially Matched Tag', it, mt));
           } else {
             lcs = LCS(mt, it);
             if (lcs >= param.minLCS && lcs >= param.minLCSRateShort * minlen && lcs >= param.minLCSRateLong * maxlen) {
               addScore(suggestedTag, mt, 1);
               addReason(reason, mt, "類似: " + it);
-              _results2.push(console.log('文字列が似ているタグ', it, mt));
+              _results2.push(console.log('Lexically Similar Tag', it, mt));
             } else if (lcs > 0 && param.maxLCSTagRateShort * lcs >= minlen && param.maxLCSTagRateLong * lcs >= maxlen) {
               _results2.push(addScore(tagLCS, mt, lcs));
             } else {
@@ -268,7 +268,7 @@
         } else {
           addScore(suggestedTag, it, 1);
           addScore(suggestedTag, it, 1);
-          addReason(reason, it, "一致: " + it);
+          addReason(reason, it, "" + (chrome.i18n.getMessage('match')) + ": " + it);
         }
       }
       return location.href = "javascript:void(function(){" + auto + "})();";
@@ -308,7 +308,7 @@
           if (s[0].match(new RegExp("^" + z + "$", 'i')) && !(z in autoTag)) {
             addScore(suggestedTag, z, 1);
             addScore(suggestedTag, z, 1);
-            addReason(reason, z, "学習: " + s[2]);
+            addReason(reason, z, "" + (chrome.i18n.getMessage('learn')) + ": " + s[2]);
             lcs = 0;
             for (it in imgTagList) {
               lcs = Math.max(LCS(z, it), lcs);
@@ -340,7 +340,7 @@
     suggest = $('<ul>');
     suggest.attr('class', 'tagCloud');
     text = $('<span>');
-    text.text('Suggest');
+    text.text(chrome.i18n.getMessage('suggest'));
     div.append(text);
     div.append($('<br>'));
     for (_i = 0, _len = resultTag.length; _i < _len; _i++) {
@@ -410,11 +410,11 @@
     addScore(tagLCS, mt, 1);
   }
 
-  console.log('画像のタグ', imgTagList);
+  console.log('Image Tag', imgTagList);
 
-  console.log('現在ブックマークしているタグ', onTagList);
+  console.log('Bookmarked Tag', onTagList);
 
-  console.log('他のユーザーがブックマークしているタグ', outerTagList);
+  console.log('Other Users\' Tag', outerTagList);
 
   getConfigAsync().done(function(config) {
     var key, keylist, param;
@@ -433,7 +433,7 @@
     if (config.learning === 'enable') addCounter(keylist);
     return $.when(getSuggestAsync(config, keylist)).done(function(response) {
       var resultTag, t;
-      console.log('学習で推薦されたタグ', response);
+      console.log('Learned Tag', response);
       addLearnedTags(response);
       resultTag = (function() {
         var _results;

@@ -133,7 +133,7 @@ identical = (imgTagLink, myTagLink) ->
         for mt of myTagLink
             if it == mt
                 ret.push(it)
-    console.log('完全一致したタグ', ret)
+    console.log('Matched Tag', ret)
     ret
 
 getConfigAsync = () ->
@@ -174,14 +174,14 @@ partialMatch = (param) ->
                 continue;
             if include(it, mt) and param.maxIncludeTagRate * minlen >= maxlen
                 addScore(suggestedTag, mt, 2);
-                addReason(reason, mt, "包含: #{it}")
-                console.log('包含関係にあるタグ', it, mt)
+                addReason(reason, mt, "#{chrome.i18n.getMessage('include')}: #{it}")
+                console.log('Partially Matched Tag', it, mt)
             else
                 lcs = LCS(mt, it);
                 if lcs >= param.minLCS and lcs >= param.minLCSRateShort * minlen and lcs >= param.minLCSRateLong * maxlen
                     addScore(suggestedTag, mt, 1);
                     addReason(reason, mt, "類似: #{it}")
-                    console.log('文字列が似ているタグ', it, mt)
+                    console.log('Lexically Similar Tag', it, mt)
                 else if lcs > 0 and param.maxLCSTagRateShort * lcs >= minlen and param.maxLCSTagRateLong * lcs >= maxlen
                     addScore(tagLCS, mt, lcs);
 
@@ -196,7 +196,7 @@ exactMatch = (config) ->
             else
                 addScore(suggestedTag, it, 1);
                 addScore(suggestedTag, it, 1);
-                addReason(reason, it, "一致: #{it}")
+                addReason(reason, it, "#{chrome.i18n.getMessage('match')}: #{it}")
         #ページのスクリプトの関数を実行するため．
         location.href = "javascript:void(function(){#{auto}})();";
     else
@@ -218,7 +218,7 @@ addLearnedTags = (tags) ->
             if s[0].match(new RegExp("^#{z}$", 'i')) and not(z of autoTag)
                 addScore(suggestedTag, z, 1);
                 addScore(suggestedTag, z, 1);
-                addReason(reason, z, "学習: #{s[2]}")
+                addReason(reason, z, "#{chrome.i18n.getMessage('learn')}: #{s[2]}")
 
                 lcs = 0
                 for it of imgTagList
@@ -239,7 +239,7 @@ showResult = (resultTag, config, param) ->
     suggest = $('<ul>');
     suggest.attr('class', 'tagCloud');
     text = $('<span>');
-    text.text('Suggest');
+    text.text(chrome.i18n.getMessage('suggest'));
     div.append(text);
     div.append($('<br>'));
 
@@ -306,9 +306,9 @@ tagLCS = {}
 for mt of myTagLink
     addScore(tagLCS, mt, 1);
 
-console.log('画像のタグ', imgTagList)
-console.log('現在ブックマークしているタグ', onTagList)
-console.log('他のユーザーがブックマークしているタグ', outerTagList)
+console.log('Image Tag', imgTagList)
+console.log('Bookmarked Tag', onTagList)
+console.log('Other Users\' Tag', outerTagList)
 
 getConfigAsync().done (config) ->
     param = getParam(config)
@@ -325,7 +325,7 @@ getConfigAsync().done (config) ->
         addCounter(keylist)
 
     $.when(getSuggestAsync(config, keylist)).done (response) ->
-        console.log('学習で推薦されたタグ', response)
+        console.log('Learned Tag', response)
         addLearnedTags(response)
         
         resultTag = ({key: t, count: suggestedTag[t]} for t of suggestedTag)

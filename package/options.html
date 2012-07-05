@@ -1,38 +1,39 @@
+<!DOCTYPE html>
 <html>
 <head><title>Pixiv Tag Suggest Options</title></head>
 <script type="text/javascript" src="./jquery-1.7.2.min.js"></script>
 <script type="text/javascript" src="./options.js"></script>
 <body>
 <p>
-Auto Select:
+<strong data-i18n="optionAutoSelect">Auto Select:</strong>
 <select id="auto_select">
-  <option value="on">On</option>
-  <option value="off">Off</option>
+  <option value="on" data-i18n="optionOn">On</option>
+  <option value="off" data-i18n="optionOff">Off</option>
 </select>
 </p>
 <p>
-Criterion:
+<strong data-i18n="optionCriterion">Criterion:</strong>
 <select id="suggest">
-  <option value="strict">Strict</option>
-  <option value="lenient">Lenient</option>
+  <option value="strict" data-i18n="optionStrict">Strict</option>
+  <option value="lenient" data-i18n="optionLenient">Lenient</option>
 </select>
 </p>
 <p>
-Position:
+<strong  data-i18n="optionPosition">Position:</strong>
 <select id="position">
-  <option value="under">Under</option>
-  <option value="over">Over</option>
+  <option value="under" data-i18n="optionUnder">Under</option>
+  <option value="over" data-i18n="optionOver">Over</option>
 </select>
 </p>
 <p>
-Learning:
+<strong  data-i18n="optionLearning">Learning:</strong>
 <select id="learning">
-  <option value="enable">Enable</option>
-  <option value="unable">Unable</option>
+  <option value="enable" data-i18n="optionEnable">Enable</option>
+  <option value="unable" data-i18n="optionUnable">Unable</option>
 </select>
-<button id="reset">Reset data</button>
+<button id="reset" data-i18n="optionResetData">Reset data</button>
 </p>
-<button id="save">Save</button>
+<button id="save" data-i18n="optionSave">Save</button>
 <p id="status"></p>
 </body>
 </html>

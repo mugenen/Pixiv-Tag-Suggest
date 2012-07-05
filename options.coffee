@@ -14,7 +14,7 @@ $( ->
         chrome.extension.sendRequest({type:'set'}, (response) ->);
 
         status = $('#status');
-        status.text('Options Saved.');
+        status.text(chrome.i18n.getMessage('optionOptionsSaved'));
         setTimeout( ->
             status.text('');
         , 1000);
@@ -33,6 +33,12 @@ $( ->
     resetData = ->
         chrome.extension.sendRequest({type:'reset'}, (response) ->);
     
+    i18n = ->
+        $('[data-i18n]').each ->
+            t = $(this)
+            t.text(chrome.i18n.getMessage(t.data('i18n')))
+    
+    i18n()
     restoreOptions()
     $("#reset").click(-> resetData())
     $("#save").click(-> saveOptions())

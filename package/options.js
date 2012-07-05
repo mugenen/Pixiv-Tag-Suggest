@@ -1,6 +1,6 @@
 
 $(function() {
-  var resetData, restoreOptions, saveOptions;
+  var i18n, resetData, restoreOptions, saveOptions;
   saveOptions = function() {
     var saveOption, status;
     saveOption = function(name) {
@@ -14,7 +14,7 @@ $(function() {
       type: 'set'
     }, function(response) {});
     status = $('#status');
-    status.text('Options Saved.');
+    status.text(chrome.i18n.getMessage('optionOptionsSaved'));
     return setTimeout(function() {
       return status.text('');
     }, 1000);
@@ -36,6 +36,14 @@ $(function() {
       type: 'reset'
     }, function(response) {});
   };
+  i18n = function() {
+    return $('[data-i18n]').each(function() {
+      var t;
+      t = $(this);
+      return t.text(chrome.i18n.getMessage(t.data('i18n')));
+    });
+  };
+  i18n();
   restoreOptions();
   $("#reset").click(function() {
     return resetData();

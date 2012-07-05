@@ -1,0 +1,62 @@
+{
+  "extDesc": {
+    "message": "pixivでブックマークするときに自分のタグが，作品のタグやブックマークされているタグに似ていたら推薦する．全く同一の場合は自動選択"
+  },
+  "optionAutoSelect": {
+    "message": "自動選択:"
+  },
+  "optionOn": {
+    "message": "する"
+  },
+  "optionOff": {
+    "message": "しない"
+  },
+  "optionCriterion": {
+    "message": "推薦基準:"
+  },
+  "optionStrict": {
+    "message": "厳しめ"
+  },
+  "optionLenient": {
+    "message": "緩め"
+  },
+  "optionPosition": {
+    "message": "表示位置(作品のタグからみて):"
+  },
+  "optionUnder": {
+    "message": "下"
+  },
+  "optionOver": {
+    "message": "上"
+  },
+  "optionLearning": {
+    "message": "学習機能:"
+  },
+  "optionEnable": {
+    "message": "有効"
+  },
+  "optionUnable": {
+    "message": "無効"
+  },
+  "optionResetData": {
+    "message": "学習データのリセット"
+  },
+  "optionSave": {
+    "message": "設定の保存"
+  },
+  "optionOptionsSaved": {
+    "message": "設定を保存しました"
+  },
+  "suggest": {
+    "message": "Pixiv Tag Suggest"
+  },
+  "match": {
+    "message": "一致"
+  },
+  "learn": {
+    "message": "履歴"
+  },
+  "include": {
+    "message": "包含"
+  }
+}

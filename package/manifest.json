@@ -1,8 +1,9 @@
 {
   "manifest_version": 2,
   "name": "Pixiv Tag Suggest",
-  "version": "3.3",
-  "description": "pixivでブックマークするときに自分のタグが，作品のタグやブックマークされているタグに似ていたら推薦する．全く同一の場合は自動選択",
+  "version": "3.4",
+  "description": "__MSG_extDesc__",
+  "default_locale": "en",
   "options_page": "options.html",
   "background": {
     "scripts": ["ibm_model1.js", "background.js"]

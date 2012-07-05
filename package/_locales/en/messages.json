@@ -1,0 +1,62 @@
+{
+  "extDesc": {
+    "message": "Suggest your bookmark tags similar to or related to the artwork's tags. Automatically select your tags identical to the artwork's tags."
+  },
+  "optionAutoSelect": {
+    "message": "Auto Select:"
+  },
+  "optionOn": {
+    "message": "On"
+  },
+  "optionOff": {
+    "message": "Off"
+  },
+  "optionCriterion": {
+    "message": "Criterion:"
+  },
+  "optionStrict": {
+    "message": "Strict"
+  },
+  "optionLenient": {
+    "message": "Lenient"
+  },
+  "optionPosition": {
+    "message": "Display Position:"
+  },
+  "optionUnder": {
+    "message": "Under"
+  },
+  "optionOver": {
+    "message": "Over"
+  },
+  "optionLearning": {
+    "message": "Learning:"
+  },
+  "optionEnable": {
+    "message": "Enable"
+  },
+  "optionUnable": {
+    "message": "Unable"
+  },
+  "optionResetData": {
+    "message": "Reset Learned Data"
+  },
+  "optionSave": {
+    "message": "Save"
+  },
+  "optionOptionsSaved": {
+    "message": "Options Saved"
+  },
+  "suggest": {
+    "message": "Pixiv Tag Suggest"
+  },
+  "match": {
+    "message": "Match"
+  },
+  "learn": {
+    "message": "History"
+  },
+  "include": {
+    "message": "Include"
+  }
+}
