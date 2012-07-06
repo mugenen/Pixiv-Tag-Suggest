@@ -58,5 +58,8 @@
   },
   "include": {
     "message": "Include"
+  },
+  "bookmarked": {
+    "message": "Bookmarked"
   }
 }

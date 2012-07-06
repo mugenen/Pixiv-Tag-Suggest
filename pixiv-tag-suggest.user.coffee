@@ -191,7 +191,7 @@ exactMatch = (config) ->
         for it in identical(imgTagLink, myTagLink)
             if config.auto_select == 'on'
                 if not(it of onTagList)
-                    auto += "pixiv.tag.toggle('#{encodeURI(it)}');";
+                    auto += "pixiv.tag.toggle('#{encodeURI(escapeQuote(it))}');";
                 autoTag[it] = true;
             else
                 addScore(suggestedTag, it, 1);
@@ -204,7 +204,7 @@ exactMatch = (config) ->
         for ot of onTagList
             addScore(suggestedTag, ot, 1);
             addScore(suggestedTag, ot, 1);
-            addReason(reason, ot, "ブックマーク済み: #{ot}")
+            addReason(reason, ot, "#{chrome.i18n.getMessage('bookmarked')}: #{ot}")
 
 
 addOtherBookmarkedTags = (param) ->
@@ -269,7 +269,7 @@ showResult = (resultTag, config, param) ->
             trigger.click ->
                 target.toggleClass('on')
                 if tag != ''
-                    location.href = "javascript:void(function(){pixiv.tag.toggle('#{encodeURI(tag)}')})();";
+                    location.href = "javascript:void(function(){pixiv.tag.toggle('#{encodeURI(escapeQuote(tag))}')})();";
 
         addToggle(a, a, rt);
                 
@@ -291,6 +291,10 @@ addReason = (hash, key, string) ->
         hash[key].push(string);
     else
         hash[key] = [string];
+
+escapeQuote = (text) ->
+    text.replace(/\\/g, "\\\\").replace(/\'/g, "\\'").replace(/\"/g, "\\\"")
+    #<>は元からエスケープされている
 
 suggestedTag = {};
 auto = '';

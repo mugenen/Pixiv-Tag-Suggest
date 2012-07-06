@@ -1,5 +1,5 @@
 (function() {
-  var LCS, addCounter, addLearnedTags, addOtherBookmarkedTags, addReason, addScore, auto, autoTag, exactMatch, getConfigAsync, getImageTag, getMyBookmarkedTag, getMyTagLink, getOthersBookmarkedTagList, getParam, getSuggestAsync, identical, imgTagLink, imgTagList, include, mt, myTagLink, onTagList, onTagSrc, outerTagList, partialMatch, reason, showResult, strcmp, suggestedTag, tagLCS, _ref, _ref2;
+  var LCS, addCounter, addLearnedTags, addOtherBookmarkedTags, addReason, addScore, auto, autoTag, escapeQuote, exactMatch, getConfigAsync, getImageTag, getMyBookmarkedTag, getMyTagLink, getOthersBookmarkedTagList, getParam, getSuggestAsync, identical, imgTagLink, imgTagList, include, mt, myTagLink, onTagList, onTagSrc, outerTagList, partialMatch, reason, showResult, strcmp, suggestedTag, tagLCS, _ref, _ref2;
 
   getParam = function(config) {
     /*
@@ -262,7 +262,7 @@
         it = _ref[_i];
         if (config.auto_select === 'on') {
           if (!(it in onTagList)) {
-            auto += "pixiv.tag.toggle('" + (encodeURI(it)) + "');";
+            auto += "pixiv.tag.toggle('" + (encodeURI(escapeQuote(it))) + "');";
           }
           autoTag[it] = true;
         } else {
@@ -277,7 +277,7 @@
       for (ot in onTagList) {
         addScore(suggestedTag, ot, 1);
         addScore(suggestedTag, ot, 1);
-        _results.push(addReason(reason, ot, "ブックマーク済み: " + ot));
+        _results.push(addReason(reason, ot, "" + (chrome.i18n.getMessage('bookmarked')) + ": " + ot));
       }
       return _results;
     }
@@ -363,7 +363,7 @@
         return trigger.click(function() {
           target.toggleClass('on');
           if (tag !== '') {
-            return location.href = "javascript:void(function(){pixiv.tag.toggle('" + (encodeURI(tag)) + "')})();";
+            return location.href = "javascript:void(function(){pixiv.tag.toggle('" + (encodeURI(escapeQuote(tag))) + "')})();";
           }
         });
       };
@@ -386,6 +386,10 @@
     } else {
       return hash[key] = [string];
     }
+  };
+
+  escapeQuote = function(text) {
+    return text.replace(/\\/g, "\\\\").replace(/\'/g, "\\'").replace(/\"/g, "\\\"");
   };
 
   suggestedTag = {};
