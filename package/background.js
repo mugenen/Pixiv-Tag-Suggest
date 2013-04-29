@@ -30,7 +30,7 @@ load = function() {
 
 count = 0;
 
-chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
+chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
   if (request.type === "get") {
     return sendResponse(config);
   } else if (request.type === "set") {

@@ -138,14 +138,14 @@ identical = (imgTagLink, myTagLink) ->
 
 getConfigAsync = () ->
     dfd = $.Deferred()
-    chrome.extension.sendRequest {type:'get'}, (response) ->
+    chrome.extension.sendMessage {type:'get'}, (response) ->
         dfd.resolve(response)
     dfd.promise()
 
 getSuggestAsync = (config, keylist) ->
     if config.learning == 'enable'
         dfd = $.Deferred()
-        chrome.extension.sendRequest {type:'suggest', source:keylist}, (response) ->
+        chrome.extension.sendMessage {type:'suggest', source:keylist}, (response) ->
             dfd.resolve(response)
         dfd.promise()
     else
@@ -155,7 +155,7 @@ addCounter = (keylist) ->
     counter = ->
         {onTagSrc} = getMyBookmarkedTag()
         bookmarked = onTagSrc
-        chrome.extension.sendRequest({type:'train', source:keylist, target:bookmarked}, (response) ->);
+        chrome.extension.sendMessage({type:'train', source:keylist, target:bookmarked}, (response) ->);
     $('.btn_type03').click(counter)
     #小説用
     $('.btn_type01').click(counter)
@@ -255,8 +255,9 @@ showResult = (resultTag, config, param) ->
         li.attr('class', 'level' + Math.max(7 - i.count, 1));
                 
         a.attr('href', 'javascript:void(0);');
+        a.attr('data-tag', rt);
         if rt of onTagList
-            a.toggleClass('on')
+            a.toggleClass('on selected')
 
         if rt of reason
             a.attr('title', reason[rt].join());
@@ -267,7 +268,6 @@ showResult = (resultTag, config, param) ->
 
         addToggle = (trigger, target, tag = '') ->
             trigger.click ->
-                target.toggleClass('on')
                 if tag != ''
                     location.href = "javascript:void(function(){pixiv.tag.toggle('#{encodeURI(escapeQuote(tag))}')})();";
 

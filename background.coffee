@@ -26,7 +26,7 @@ load = ->
         learning: learning
 
 count = 0;
-chrome.extension.onRequest.addListener (request, sender, sendResponse) ->
+chrome.extension.onMessage.addListener (request, sender, sendResponse) ->
     if request.type == "get"
         sendResponse(config);
     else if request.type == "set"

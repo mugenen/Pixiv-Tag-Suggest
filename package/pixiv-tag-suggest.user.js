@@ -179,7 +179,7 @@
   getConfigAsync = function() {
     var dfd;
     dfd = $.Deferred();
-    chrome.extension.sendRequest({
+    chrome.extension.sendMessage({
       type: 'get'
     }, function(response) {
       return dfd.resolve(response);
@@ -191,7 +191,7 @@
     var dfd;
     if (config.learning === 'enable') {
       dfd = $.Deferred();
-      chrome.extension.sendRequest({
+      chrome.extension.sendMessage({
         type: 'suggest',
         source: keylist
       }, function(response) {
@@ -209,7 +209,7 @@
       var bookmarked, onTagSrc;
       onTagSrc = getMyBookmarkedTag().onTagSrc;
       bookmarked = onTagSrc;
-      return chrome.extension.sendRequest({
+      return chrome.extension.sendMessage({
         type: 'train',
         source: keylist,
         target: bookmarked
@@ -353,7 +353,8 @@
       a.addClass('tag');
       li.attr('class', 'level' + Math.max(7 - i.count, 1));
       a.attr('href', 'javascript:void(0);');
-      if (rt in onTagList) a.toggleClass('on');
+      a.attr('data-tag', rt);
+      if (rt in onTagList) a.toggleClass('on selected');
       if (rt in reason) a.attr('title', reason[rt].join());
       a.text(rt);
       li.append(a);
@@ -361,7 +362,6 @@
       addToggle = function(trigger, target, tag) {
         if (tag == null) tag = '';
         return trigger.click(function() {
-          target.toggleClass('on');
           if (tag !== '') {
             return location.href = "javascript:void(function(){pixiv.tag.toggle('" + (encodeURI(escapeQuote(tag))) + "')})();";
           }
