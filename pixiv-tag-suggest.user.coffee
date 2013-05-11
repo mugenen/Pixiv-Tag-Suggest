@@ -111,7 +111,7 @@ getOthersBookmarkedTagList = ->
         async: false
 
     html = $(xhr.responseText);
-    outerTagSrc = html.find('.link_purple.linkStyle a');
+    outerTagSrc = html.find('.tags a');
     outerTagList = {};
     for i in outerTagSrc
         ot = i.text

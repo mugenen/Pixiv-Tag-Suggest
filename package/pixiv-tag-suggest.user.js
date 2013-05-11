@@ -138,7 +138,7 @@
       async: false
     });
     html = $(xhr.responseText);
-    outerTagSrc = html.find('.link_purple.linkStyle a');
+    outerTagSrc = html.find('.tags a');
     outerTagList = {};
     for (_i = 0, _len = outerTagSrc.length; _i < _len; _i++) {
       i = outerTagSrc[_i];
