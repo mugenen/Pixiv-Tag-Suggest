@@ -71,23 +71,22 @@ strcmp = (a, b) ->
 
 getMyTagLink = ->
     myTagLink = {}
-    myTagSrc = $('.tagCloud:eq(0) a')
+    myTagSrc = $('.tag-cloud-container span')
     if myTagSrc.length < 1
         return;
     for i in myTagSrc
-        tagName = i.childNodes[0].textContent
+        tagName = i.textContent
         myTagLink[tagName] = i;
     myTagLink
 
 getImageTag = ->
     imgTagList = {};
     imgTagLink = {};
-    imgTagTable = $('.bookmark_recommend_tag')
-    if imgTagTable.length != 1#画像のタグが空でないとき
-        imgTagSrc = imgTagTable.eq(0).find('a')
-        for i in imgTagSrc
-            imgTagList[i.text] = true;
-            imgTagLink[i.text] = i;
+    imgTagSrc = $('.recommend-tag').find('span[data-tag]')
+    for i in imgTagSrc
+        i_tag = i.getAttribute('data-tag')
+        imgTagList[i_tag] = true;
+        imgTagLink[i_tag] = i;
     imgTagList: imgTagList
     imgTagLink: imgTagLink
 
@@ -235,13 +234,13 @@ showResult = (resultTag, config, param) ->
             return strcmp(a, b);
 
     div = $('<div>');
-    div.attr('class', 'bookmark_recommend_tag');
-    suggest = $('<ul>');
-    suggest.attr('class', 'tagCloud');
-    text = $('<span>');
+    div.attr('class', 'recommend-tag');
+    text = $('<h1>');
+    text.attr('class', 'title');
     text.text(chrome.i18n.getMessage('suggest'));
     div.append(text);
-    div.append($('<br>'));
+    suggest = $('<ul>');
+    suggest.attr('class', 'list-items tag-cloud work');
 
     for i in resultTag
         if param.limit <= 0
@@ -250,11 +249,9 @@ showResult = (resultTag, config, param) ->
                 
         rt = i.key;
         li = $('<li>');
-        a = $('<a>');
-        a.addClass('tag');
-        li.attr('class', 'level' + Math.max(7 - i.count, 1));
+        a = $('<span>');
+        a.addClass('tag c6');
                 
-        a.attr('href', 'javascript:void(0);');
         a.attr('data-tag', rt);
         if rt of onTagList
             a.toggleClass('on selected')
@@ -266,21 +263,9 @@ showResult = (resultTag, config, param) ->
         li.append(a);
         suggest.append(li);
 
-        addToggle = (trigger, target, tag = '') ->
-            trigger.click ->
-                if tag != ''
-                    location.href = "javascript:void(function(){pixiv.tag.toggle('#{encodeURI(escapeQuote(tag))}')})();";
-
-        addToggle(a, a, rt);
-                
-        addToggle($(myTagLink[i.key]), a);
-
-        if rt of imgTagLink
-            addToggle($(imgTagLink[i.key]), a);
-
     div.append(suggest);
 
-    imgTagTable = $('.bookmark_recommend_tag').eq(0)
+    imgTagTable = $('.recommend-tag').eq(0)
     if config.position == 'under'
         imgTagTable.after(div)
     else

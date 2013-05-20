@@ -83,28 +83,26 @@
   getMyTagLink = function() {
     var i, myTagLink, myTagSrc, tagName, _i, _len;
     myTagLink = {};
-    myTagSrc = $('.tagCloud:eq(0) a');
+    myTagSrc = $('.tag-cloud-container span');
     if (myTagSrc.length < 1) return;
     for (_i = 0, _len = myTagSrc.length; _i < _len; _i++) {
       i = myTagSrc[_i];
-      tagName = i.childNodes[0].textContent;
+      tagName = i.textContent;
       myTagLink[tagName] = i;
     }
     return myTagLink;
   };
 
   getImageTag = function() {
-    var i, imgTagLink, imgTagList, imgTagSrc, imgTagTable, _i, _len;
+    var i, i_tag, imgTagLink, imgTagList, imgTagSrc, _i, _len;
     imgTagList = {};
     imgTagLink = {};
-    imgTagTable = $('.bookmark_recommend_tag');
-    if (imgTagTable.length !== 1) {
-      imgTagSrc = imgTagTable.eq(0).find('a');
-      for (_i = 0, _len = imgTagSrc.length; _i < _len; _i++) {
-        i = imgTagSrc[_i];
-        imgTagList[i.text] = true;
-        imgTagLink[i.text] = i;
-      }
+    imgTagSrc = $('.recommend-tag').find('span[data-tag]');
+    for (_i = 0, _len = imgTagSrc.length; _i < _len; _i++) {
+      i = imgTagSrc[_i];
+      i_tag = i.getAttribute('data-tag');
+      imgTagList[i_tag] = true;
+      imgTagLink[i_tag] = i;
     }
     return {
       imgTagList: imgTagList,
@@ -325,7 +323,7 @@
   };
 
   showResult = function(resultTag, config, param) {
-    var a, addToggle, div, i, imgTagTable, li, rt, suggest, text, _i, _len;
+    var a, div, i, imgTagTable, li, rt, suggest, text, _i, _len;
     resultTag.sort(function(a, b) {
       if (a.count !== b.count) {
         return b.count - a.count;
@@ -336,43 +334,30 @@
       }
     });
     div = $('<div>');
-    div.attr('class', 'bookmark_recommend_tag');
-    suggest = $('<ul>');
-    suggest.attr('class', 'tagCloud');
-    text = $('<span>');
+    div.attr('class', 'recommend-tag');
+    text = $('<h1>');
+    text.attr('class', 'title');
     text.text(chrome.i18n.getMessage('suggest'));
     div.append(text);
-    div.append($('<br>'));
+    suggest = $('<ul>');
+    suggest.attr('class', 'list-items tag-cloud work');
     for (_i = 0, _len = resultTag.length; _i < _len; _i++) {
       i = resultTag[_i];
       if (param.limit <= 0) break;
       param.limit--;
       rt = i.key;
       li = $('<li>');
-      a = $('<a>');
-      a.addClass('tag');
-      li.attr('class', 'level' + Math.max(7 - i.count, 1));
-      a.attr('href', 'javascript:void(0);');
+      a = $('<span>');
+      a.addClass('tag c6');
       a.attr('data-tag', rt);
       if (rt in onTagList) a.toggleClass('on selected');
       if (rt in reason) a.attr('title', reason[rt].join());
       a.text(rt);
       li.append(a);
       suggest.append(li);
-      addToggle = function(trigger, target, tag) {
-        if (tag == null) tag = '';
-        return trigger.click(function() {
-          if (tag !== '') {
-            return location.href = "javascript:void(function(){pixiv.tag.toggle('" + (encodeURI(escapeQuote(tag))) + "')})();";
-          }
-        });
-      };
-      addToggle(a, a, rt);
-      addToggle($(myTagLink[i.key]), a);
-      if (rt in imgTagLink) addToggle($(imgTagLink[i.key]), a);
     }
     div.append(suggest);
-    imgTagTable = $('.bookmark_recommend_tag').eq(0);
+    imgTagTable = $('.recommend-tag').eq(0);
     if (config.position === 'under') {
       return imgTagTable.after(div);
     } else {
