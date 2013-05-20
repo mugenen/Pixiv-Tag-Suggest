@@ -348,7 +348,7 @@
       rt = i.key;
       li = $('<li>');
       a = $('<span>');
-      a.addClass('tag c6');
+      a.addClass('tag c' + Math.max(7 - i.count, 1));
       a.attr('data-tag', rt);
       if (rt in onTagList) a.toggleClass('on selected');
       if (rt in reason) a.attr('title', reason[rt].join());

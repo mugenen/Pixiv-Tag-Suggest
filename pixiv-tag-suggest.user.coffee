@@ -250,7 +250,7 @@ showResult = (resultTag, config, param) ->
         rt = i.key;
         li = $('<li>');
         a = $('<span>');
-        a.addClass('tag c6');
+        a.addClass('tag c' + Math.max(7 - i.count, 1));
                 
         a.attr('data-tag', rt);
         if rt of onTagList
