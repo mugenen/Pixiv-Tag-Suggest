@@ -75,7 +75,7 @@ getMyTagLink = ->
     if myTagSrc.length < 1
         return;
     for i in myTagSrc
-        tagName = i.textContent
+        tagName = i.getAttribute('data-tag')
         myTagLink[tagName] = i;
     myTagLink
 

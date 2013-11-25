@@ -87,7 +87,7 @@
     if (myTagSrc.length < 1) return;
     for (_i = 0, _len = myTagSrc.length; _i < _len; _i++) {
       i = myTagSrc[_i];
-      tagName = i.textContent;
+      tagName = i.getAttribute('data-tag');
       myTagLink[tagName] = i;
     }
     return myTagLink;
