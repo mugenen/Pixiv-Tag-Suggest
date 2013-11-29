@@ -357,11 +357,15 @@
       suggest.append(li);
     }
     div.append(suggest);
-    imgTagTable = $('.recommend-tag').eq(0);
-    if (config.position === 'under') {
-      return imgTagTable.after(div);
+    if ($('.work-tags-container') === 1) {
+      imgTagTable = $('.recommend-tag').eq(0);
+      if (config.position === 'under') {
+        return imgTagTable.after(div);
+      } else {
+        return imgTagTable.before(div);
+      }
     } else {
-      return imgTagTable.before(div);
+      return $('.tag-cloud-container').before(div);
     }
   };
 

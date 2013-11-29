@@ -265,11 +265,14 @@ showResult = (resultTag, config, param) ->
 
     div.append(suggest);
 
-    imgTagTable = $('.recommend-tag').eq(0)
-    if config.position == 'under'
-        imgTagTable.after(div)
+    if $('.work-tags-container') == 1
+        imgTagTable = $('.recommend-tag').eq(0)
+        if config.position == 'under'
+            imgTagTable.after(div)
+        else
+           imgTagTable.before(div)
     else
-       imgTagTable.before(div)
+       $('.tag-cloud-container').before(div)
 
 addReason = (hash, key, string) ->
     if key of hash
