@@ -265,7 +265,7 @@ showResult = (resultTag, config, param) ->
 
     div.append(suggest);
 
-    if $('.work-tags-container') == 1
+    if $('.work-tags-container').length == 1
         imgTagTable = $('.recommend-tag').eq(0)
         if config.position == 'under'
             imgTagTable.after(div)
