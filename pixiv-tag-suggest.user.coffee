@@ -155,9 +155,7 @@ addCounter = (keylist) ->
         {onTagSrc} = getMyBookmarkedTag()
         bookmarked = onTagSrc
         chrome.extension.sendMessage({type:'train', source:keylist, target:bookmarked}, (response) ->);
-    $('.btn_type03').click(counter)
-    #小説用
-    $('.btn_type01').click(counter)
+    $('.bookmark-detail-unit ._button-large').click(counter)
 
 
 
