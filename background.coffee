@@ -27,6 +27,7 @@ load = ->
 
 count = 0;
 chrome.extension.onMessage.addListener (request, sender, sendResponse) ->
+    console.log(request)
     if request.type == "get"
         sendResponse(config);
     else if request.type == "set"
