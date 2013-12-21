@@ -10,7 +10,7 @@ $(function() {
     saveOption('suggest');
     saveOption('position');
     saveOption('learning');
-    chrome.extension.sendRequest({
+    chrome.extension.sendMessage({
       type: 'set'
     }, function(response) {});
     status = $('#status');

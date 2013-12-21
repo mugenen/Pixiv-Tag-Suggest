@@ -11,7 +11,7 @@ $( ->
 
         saveOption('learning');
 
-        chrome.extension.sendRequest({type:'set'}, (response) ->);
+        chrome.extension.sendMessage({type:'set'}, (response) ->);
 
         status = $('#status');
         status.text(chrome.i18n.getMessage('optionOptionsSaved'));
