@@ -213,8 +213,7 @@
         target: bookmarked
       }, function(response) {});
     };
-    $('.btn_type03').click(counter);
-    return $('.btn_type01').click(counter);
+    return $('.bookmark-detail-unit ._button-large').click(counter);
   };
 
   partialMatch = function(param) {
@@ -253,7 +252,7 @@
   };
 
   exactMatch = function(config) {
-    var it, ot, _i, _len, _ref, _results;
+    var it, ot, _i, _len, _ref;
     if (onTagSrc[0] === '') {
       _ref = identical(imgTagLink, myTagLink);
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -269,15 +268,14 @@
           addReason(reason, it, "" + (chrome.i18n.getMessage('match')) + ": " + it);
         }
       }
-      return location.href = "javascript:void(function(){" + auto + "})();";
+      return "javascript:void(function(){" + auto + "})();";
     } else {
-      _results = [];
       for (ot in onTagList) {
         addScore(suggestedTag, ot, 1);
         addScore(suggestedTag, ot, 1);
-        _results.push(addReason(reason, ot, "" + (chrome.i18n.getMessage('bookmarked')) + ": " + ot));
+        addReason(reason, ot, "" + (chrome.i18n.getMessage('bookmarked')) + ": " + ot);
       }
-      return _results;
+      return null;
     }
   };
 
@@ -410,10 +408,10 @@
   console.log('Other Users\' Tag', outerTagList);
 
   getConfigAsync().done(function(config) {
-    var key, keylist, param;
+    var autoSelect, key, keylist, param;
     param = getParam(config);
     addOtherBookmarkedTags(param);
-    exactMatch(config);
+    autoSelect = exactMatch(config);
     partialMatch(param);
     keylist = (function() {
       var _results;
@@ -439,7 +437,8 @@
         }
         return _results;
       })();
-      if (resultTag.length >= 1) return showResult(resultTag, config, param);
+      if (resultTag.length >= 1) showResult(resultTag, config, param);
+      if (autoSelect != null) return location.href = autoSelect;
     });
   });
 

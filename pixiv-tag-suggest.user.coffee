@@ -195,13 +195,14 @@ exactMatch = (config) ->
                 addScore(suggestedTag, it, 1);
                 addReason(reason, it, "#{chrome.i18n.getMessage('match')}: #{it}")
         #ページのスクリプトの関数を実行するため．
-        location.href = "javascript:void(function(){#{auto}})();";
+        return "javascript:void(function(){#{auto}})();";
     else
     #現在ブックマークしているタグを推薦（イラストのタグを除く）
         for ot of onTagList
             addScore(suggestedTag, ot, 1);
             addScore(suggestedTag, ot, 1);
             addReason(reason, ot, "#{chrome.i18n.getMessage('bookmarked')}: #{ot}")
+        return null
 
 
 addOtherBookmarkedTags = (param) ->
@@ -305,7 +306,7 @@ getConfigAsync().done (config) ->
 
     addOtherBookmarkedTags(param)
 
-    exactMatch(config)
+    autoSelect = exactMatch(config)
     partialMatch(param)
 
 
@@ -321,3 +322,5 @@ getConfigAsync().done (config) ->
         resultTag = ({key: t, count: suggestedTag[t]} for t of suggestedTag)
         if resultTag.length >= 1
             showResult(resultTag, config, param)
+        if autoSelect?
+            location.href=autoSelect
