@@ -106,6 +106,9 @@ class IBM_Model_1
             sort.push([r, v, reason[r].join()]);
         sort.sort((a, b) -> b[1] - a[1])
         sort
-        
+    clean: (threshold = 2) ->
+        for i, v of @pair
+            if v < threshold
+                delete @pair[i]
 
 module?.exports = IBM_Model_1

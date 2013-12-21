@@ -45,6 +45,13 @@ assert.deepEqual(model.pair, pair2)
 model.train(1)
 assert.strictEqual('TEST11', model.suggest(['test12'])[0][0])
 
+model.clean(2)
+pair3 = {
+    'NULLTAG NULLTAG': 2
+}
+assert.deepEqual(model.pair, pair3)
+
+
 corpus2 =  [
   [
     [ 'TYPE-MOON-セイバー', ],

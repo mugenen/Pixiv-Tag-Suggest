@@ -38,9 +38,12 @@ chrome.extension.onMessage.addListener (request, sender, sendResponse) ->
         if config.learning == 'enable'
             model.countOne([request.target, request.source]);
             count++;
-            if count >= 2
+            if count % 10 == 0 and Math.random() <= 0.1
+                console.log('cleaning!')
+                console.log(model.pair)
+                model.clean(2);
+            if count % 2 == 0
                 model.train(2, 0.3);
-                count -= 2;
             localStorage["model"] = JSON.stringify(model)
     else if request.type == "suggest"
         if config.learning == 'enable'

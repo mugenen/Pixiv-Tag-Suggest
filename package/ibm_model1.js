@@ -183,6 +183,22 @@ IBM_Model_1 = (function() {
     return sort;
   };
 
+  IBM_Model_1.prototype.clean = function(threshold) {
+    var i, v, _ref, _results;
+    if (threshold == null) threshold = 2;
+    _ref = this.pair;
+    _results = [];
+    for (i in _ref) {
+      v = _ref[i];
+      if (v < threshold) {
+        _results.push(delete this.pair[i]);
+      } else {
+        _results.push(void 0);
+      }
+    }
+    return _results;
+  };
+
   return IBM_Model_1;
 
 }).call(this);
